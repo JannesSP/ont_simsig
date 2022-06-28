@@ -118,7 +118,6 @@ for data, string in zip([ms, md, logms, logmd], ['means', 'medians', 'logmeans',
     plt.close()
 
     w.write('string\n')
-    w.write(dist.model)
-    w.write('\n')
+    w.write(str(dist.model) + '\n')
     
 w.close()
