@@ -21,6 +21,9 @@ for id in ids:
         ms.append(np.mean(np.diff(h5[id][:, 0])))
         md.append(np.median(np.diff(h5[id][:, 0])))
 
+ms = np.array(ms)
+md = np.array(md)
+
 # ============================ MEANS ============================
 
 # the bins should be of integer width, because poisson is an integer distribution
