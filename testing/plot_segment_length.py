@@ -21,14 +21,15 @@ for id in ids:
         md.append(np.median(np.diff(h5[id][:, 0])))
 
 # ============================ MEANS ============================
+
 # the bins should be of integer width, because poisson is an integer distribution
 plt.title('EpiNano unmodified mean segment lengths distribution')
 plt.hist(ms, bins=60, label='means', density=True)
 
 x = np.arange(min(ms), max(ms) + 1)
 
-plt.plot(x, stats.poisson.pmf(x, np.mean(ms)), 'go', label="poisson", color = 'orange')
-plt.plot(x, stats.nbinom.pmf(x, np.mean(ms), np.mean(ms)/2), 'go', label="nbinom", color = 'red')
+plt.plot(x, stats.poisson.pmf(x, np.mean(ms)), marker='o', label="poisson")
+plt.plot(x, stats.nbinom.pmf(x, np.mean(ms), np.mean(ms)/2), marker='o', label="nbinom")
 
 axes = plt.gca()
 ymin, ymax = axes.get_ylim()
@@ -41,14 +42,15 @@ plt.close()
 
 
 # ============================ MEDIAN ============================
+
 # the bins should be of integer width, because poisson is an integer distribution
 plt.title('EpiNano unmodified median segment lengths distribution')
 plt.hist(md, bins=60, label='medians', density=True)
 
 x = np.arange(min(md), max(md) + 1)
 
-plt.plot(x, stats.poisson.pmf(x, np.mean(md)), 'go', label="poisson", color = 'orange')
-plt.plot(x, stats.nbinom.pmf(x, np.mean(md), np.mean(md)/2), 'go', label="nbinom", color = 'red')
+plt.plot(x, stats.poisson.pmf(x, np.mean(md)), marker='o', label="poisson")
+plt.plot(x, stats.nbinom.pmf(x, np.mean(md), np.mean(md)/2), marker='o', label="nbinom")
 
 axes = plt.gca()
 ymin, ymax = axes.get_ylim()
@@ -58,3 +60,6 @@ plt.text(np.median(md), ymax, 'median: ' + str(np.median(md)))
 plt.legend()
 plt.savefig('epinano_nomod_median_segment_lengths_distribution.png')
 plt.close()
+
+# ============================ DISTFIT ============================
+
