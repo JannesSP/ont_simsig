@@ -30,7 +30,7 @@ plt.hist(ms, bins=60, label='means', density=True)
 x = np.arange(min(ms), max(ms) + 1)
 
 plt.plot(x, stats.poisson.pmf(x, np.mean(ms)), marker='o', label="poisson")
-plt.plot(x, stats.nbinom.pmf(x, np.mean(ms), np.mean(ms)/2), marker='o', label="nbinom")
+plt.plot(x, stats.nbinom.pmf(x, np.mean(ms), 0.5), marker='o', label="nbinom")
 
 axes = plt.gca()
 ymin, ymax = axes.get_ylim()
@@ -51,7 +51,7 @@ plt.hist(md, bins=60, label='medians', density=True)
 x = np.arange(min(md), max(md) + 1)
 
 plt.plot(x, stats.poisson.pmf(x, np.mean(md)), marker='o', label="poisson")
-plt.plot(x, stats.nbinom.pmf(x, np.mean(md), np.mean(md)/2), marker='o', label="nbinom")
+plt.plot(x, stats.nbinom.pmf(x, np.mean(md), 0.5), marker='o', label="nbinom")
 
 axes = plt.gca()
 ymin, ymax = axes.get_ylim()
@@ -67,7 +67,7 @@ plt.close()
 logms = np.log(ms)
 # the bins should be of integer width, because poisson is an integer distribution
 plt.title('EpiNano unmodified log mean segment lengths distribution')
-plt.hist(logms, bins=60, label='means', density=True)
+plt.hist(logms, bins=60, label='logmeans', density=True)
 
 x = np.arange(min(logms), max(logms) + 1)
 
@@ -89,7 +89,7 @@ plt.close()
 logmd = np.log(md)
 # the bins should be of integer width, because poisson is an integer distribution
 plt.title('EpiNano unmodified log median segment lengths distribution')
-plt.hist(md, bins=60, label='medians', density=True)
+plt.hist(logmd, bins=60, label='logmedians', density=True)
 
 x = np.arange(min(logmd), max(logmd) + 1)
 
