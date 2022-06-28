@@ -42,7 +42,7 @@ plt.savefig('epinano_nomod_mean_segment_lengths_distribution.png')
 plt.close()
 
 
-# ============================ MEDIAN ============================
+# ============================ MEDIANS ============================
 
 # the bins should be of integer width, because poisson is an integer distribution
 plt.title('EpiNano unmodified median segment lengths distribution')
@@ -60,6 +60,49 @@ plt.text(np.median(md), ymax, 'median: ' + str(np.median(md)))
 
 plt.legend()
 plt.savefig('epinano_nomod_median_segment_lengths_distribution.png')
+plt.close()
+
+# ============================ LOG MEANS ============================
+
+logms = np.log(ms)
+# the bins should be of integer width, because poisson is an integer distribution
+plt.title('EpiNano unmodified log mean segment lengths distribution')
+plt.hist(logms, bins=60, label='means', density=True)
+
+x = np.arange(min(logms), max(logms) + 1)
+
+plt.plot(x, stats.poisson.pmf(x, np.mean(logms)), marker='o', label="poisson")
+plt.plot(x, stats.nbinom.pmf(x, np.mean(logms), np.mean(logms)/2), marker='o', label="nbinom")
+
+axes = plt.gca()
+ymin, ymax = axes.get_ylim()
+plt.vlines(np.median(logms), ymin = ymin, ymax=ymax, color = 'red')
+plt.text(np.median(logms), ymax, 'median: ' + str(np.median(logms)))
+
+plt.legend()
+plt.savefig('epinano_nomod_logmean_segment_lengths_distribution.png')
+plt.close()
+
+
+# ============================ LOG MEDIANS ============================
+
+logmd = np.log(md)
+# the bins should be of integer width, because poisson is an integer distribution
+plt.title('EpiNano unmodified log median segment lengths distribution')
+plt.hist(md, bins=60, label='medians', density=True)
+
+x = np.arange(min(logmd), max(logmd) + 1)
+
+plt.plot(x, stats.poisson.pmf(x, np.mean(logmd)), marker='o', label="poisson")
+plt.plot(x, stats.nbinom.pmf(x, np.mean(logmd), np.mean(logmd)/2), marker='o', label="nbinom")
+
+axes = plt.gca()
+ymin, ymax = axes.get_ylim()
+plt.vlines(np.median(logmd), ymin = ymin, ymax=ymax, color = 'red')
+plt.text(np.median(logmd), ymax, 'median: ' + str(np.median(logmd)))
+
+plt.legend()
+plt.savefig('epinano_nomod_logmedian_segment_lengths_distribution.png')
 plt.close()
 
 # ============================ DISTFIT ============================
