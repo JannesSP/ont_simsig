@@ -110,8 +110,10 @@ w = open('distfit_result.txt', 'w')
 
 dist = distfit(method='discrete')
 
-for data, string in zip([ms, md, logms, logmd], ['means', 'medians', 'logmeans', 'logmedians']):
+for data, string in zip([ms, md], ['means', 'medians']):
     
+    # normalize data counts to 1
+    data = data / sum(data)
     dist.fit_transform(data)
     dist.plot()
     plt.savefig(f'distfit_{string}.png')
@@ -119,5 +121,19 @@ for data, string in zip([ms, md, logms, logmd], ['means', 'medians', 'logmeans',
 
     w.write('string\n')
     w.write(str(dist.model) + '\n')
+
+dist = distfit()
+
+for data, string in zip([logms, logmd], ['logmeans', 'logmedians']):
     
+    # normalize data counts to 1
+    data = data / sum(data)
+    dist.fit_transform(data)
+    dist.plot()
+    plt.savefig(f'distfit_{string}.png')
+    plt.close()
+
+    w.write('string\n')
+    w.write(str(dist.model) + '\n')
+
 w.close()
