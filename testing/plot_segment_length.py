@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import h5py
 from scipy import stats
+from distfit import distfit
 
 f = '/home/yi98suv/projects/modbuster/data/epinano/nanopolish/nanopolish_segmentation_bases_2.hdf5'
 id_file = '/home/yi98suv/projects/modbuster/data/epinano/nanopolish/ids_nomod_rep1.ids'
@@ -63,3 +64,14 @@ plt.close()
 
 # ============================ DISTFIT ============================
 
+dist = distfit()
+
+dist.fit_transform(ms)
+dist.plot()
+plt.savefig('distfit_means.png')
+plt.close()
+
+dist.fit_transform(md)
+dist.plot()
+plt.savefig('distfit_medians.png')
+plt.close()
