@@ -110,7 +110,7 @@ plt.close()
 
 # ============================ DISTFIT ============================
 
-dist = distfit()
+dist = distfit(method='discrete')
 
 dist.fit_transform(ms)
 dist.plot()
