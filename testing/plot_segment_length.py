@@ -3,13 +3,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import h5py
-from scipy.optimize import curve_fit
-# from scipy.stats import poisson
 from scipy import stats
-
-# def fit_function(k, lamb):
-#     '''poisson function, parameter lamb is the fit parameter'''
-#     return poisson.pmf(k, lamb)
 
 f = '/home/yi98suv/projects/modbuster/data/epinano/nanopolish/nanopolish_segmentation_bases_2.hdf5'
 id_file = '/home/yi98suv/projects/modbuster/data/epinano/nanopolish/ids_nomod_rep1.ids'
@@ -41,15 +35,8 @@ xt = plt.xticks()[0]
 xmin, xmax = min(xt), max(xt)  
 lnspc = np.linspace(xmin, xmax, len(ms))
 
-# exactly same as above
-ag,bg,cg = stats.poisson.fit(ms)  
-pdf_poisson = stats.poisson.pdf(lnspc, ag, bg,cg)  
-plt.plot(lnspc, pdf_poisson, label="poisson")
-
-# exactly same as above
-ag,bg,cg = stats.nbinom.fit(ms)  
-pdf_nbinom = stats.nbinom.pdf(lnspc, ag, bg,cg)  
-plt.plot(lnspc, pdf_nbinom, label="nbinom")
+plt.plot(lnspc, stats.poisson.pmf(lnspc, np.mean(ms)), label="poisson")
+plt.plot(lnspc, stats.nbinom.pmf(lnspc, np.mean(ms), np.mean(ms)/2), label="nbinom")
 
 plt.legend()
 plt.savefig('epinano_nomod_mean_segment_lengths_distribution.png')
@@ -71,15 +58,8 @@ xt = plt.xticks()[0]
 xmin, xmax = min(xt), max(xt)  
 lnspc = np.linspace(xmin, xmax, len(md))
 
-# exactly same as above
-ag,bg,cg = stats.poisson.fit(md)  
-pdf_poisson = stats.poisson.pdf(lnspc, ag, bg,cg)  
-plt.plot(lnspc, pdf_poisson, label="poisson")
-
-# exactly same as above
-ag,bg,cg = stats.nbinom.fit(md)  
-pdf_nbinom = stats.nbinom.pdf(lnspc, ag, bg,cg)  
-plt.plot(lnspc, pdf_nbinom, label="nbinom")
+plt.plot(lnspc, stats.poisson.pmf(lnspc, np.mean(md)), label="poisson")
+plt.plot(lnspc, stats.nbinom.pmf(lnspc, np.mean(md), np.mean(md)/2), label="nbinom")
 
 plt.legend()
 plt.savefig('epinano_nomod_median_segment_lengths_distribution.png')
