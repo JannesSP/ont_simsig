@@ -23,15 +23,12 @@ for id in ids:
 # ============================ MEANS ============================
 # the bins should be of integer width, because poisson is an integer distribution
 plt.title('EpiNano unmodified mean segment lengths distribution')
-plt.hist(ms, bins=60, label='means')
-# find minimum and maximum of xticks, so we know
-# where we should compute theoretical distribution
-xt = plt.xticks()[0]  
-xmin, xmax = min(xt), max(xt)  
-lnspc = np.linspace(xmin, xmax, len(ms))
+plt.hist(ms, bins=60, label='means', density=True)
 
-plt.plot(lnspc, stats.poisson.pmf(lnspc, np.mean(ms))*max(md), 'go', label="poisson")
-plt.plot(lnspc, stats.nbinom.pmf(lnspc, np.mean(ms), np.mean(ms)/2)*max(md), 'go', label="nbinom")
+x = np.arange(min(ms), max(ms) + 1)
+
+plt.plot(x, stats.poisson.pmf(x, np.mean(ms)), 'go', label="poisson")
+plt.plot(x, stats.nbinom.pmf(x, np.mean(ms), np.mean(ms)/2), 'go', label="nbinom")
 
 axes = plt.gca()
 ymin, ymax = axes.get_ylim()
@@ -46,16 +43,12 @@ plt.close()
 # ============================ MEDIAN ============================
 # the bins should be of integer width, because poisson is an integer distribution
 plt.title('EpiNano unmodified median segment lengths distribution')
-plt.hist(md, bins=60, label='medians')
+plt.hist(md, bins=60, label='medians', density=True)
 
-# find minimum and maximum of xticks, so we know
-# where we should compute theoretical distribution
-xt = plt.xticks()[0]  
-xmin, xmax = min(xt), max(xt)  
-lnspc = np.linspace(xmin, xmax, len(md))
+x = np.arange(min(md), max(md) + 1)
 
-plt.plot(lnspc, stats.poisson.pmf(lnspc, np.mean(md))*max(md), 'go', label="poisson")
-plt.plot(lnspc, stats.nbinom.pmf(lnspc, np.mean(md), np.mean(md)/2)*max(md), 'go', label="nbinom")
+plt.plot(x, stats.poisson.pmf(x, np.mean(md)), 'go', label="poisson")
+plt.plot(x, stats.nbinom.pmf(x, np.mean(md), np.mean(md)/2), 'go', label="nbinom")
 
 axes = plt.gca()
 ymin, ymax = axes.get_ylim()
