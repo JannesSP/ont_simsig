@@ -112,8 +112,6 @@ dist = distfit(method='discrete')
 
 for data, string in zip([ms, md], ['means', 'medians']):
     
-    # normalize data counts to 1
-    data = data / sum(data)
     dist.fit_transform(data)
     dist.plot()
     plt.savefig(f'distfit_{string}.png')
@@ -126,8 +124,6 @@ dist = distfit()
 
 for data, string in zip([logms, logmd], ['logmeans', 'logmedians']):
     
-    # normalize data counts to 1
-    data = data / sum(data)
     dist.fit_transform(data)
     dist.plot()
     plt.savefig(f'distfit_{string}.png')
