@@ -4,12 +4,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 import h5py
 from scipy.optimize import curve_fit
-from scipy.special import factorial
-from scipy.stats import poisson
+# from scipy.stats import poisson
+from scipy import stats
 
-def fit_function(k, lamb):
-    '''poisson function, parameter lamb is the fit parameter'''
-    return poisson.pmf(k, lamb)
+# def fit_function(k, lamb):
+#     '''poisson function, parameter lamb is the fit parameter'''
+#     return poisson.pmf(k, lamb)
 
 f = '/home/yi98suv/projects/modbuster/data/epinano/nanopolish/nanopolish_segmentation_bases_2.hdf5'
 id_file = '/home/yi98suv/projects/modbuster/data/epinano/nanopolish/ids_nomod_rep1.ids'
@@ -28,28 +28,29 @@ for id in ids:
 
 # ============================ MEANS ============================
 # the bins should be of integer width, because poisson is an integer distribution
-entries, bin_edges, patches = plt.hist(ms, bins=60, density=True, label='means')
+plt.hist(ms, bins=60, density=True, label='means')
 axes = plt.gca()
 y_min, y_max = axes.get_ylim()
 plt.title('epinano_nomod_mean_segment_lengths_distribution.png')
 plt.vlines(np.median(ms), ymin = y_min, ymax=y_max)
 plt.text(np.median(ms), y_max, 'median: ' + str(np.median(ms)))
 
-# calculate bin centres
-bin_middles = 0.5 * (bin_edges[1:] + bin_edges[:-1])
+# find minimum and maximum of xticks, so we know
+# where we should compute theoretical distribution
+xt = plt.xticks()[0]  
+xmin, xmax = min(xt), max(xt)  
+lnspc = np.linspace(xmin, xmax, len(ms))
 
-# fit with curve_fit
-parameters, cov_matrix = curve_fit(fit_function, bin_middles, entries)
+# exactly same as above
+ag,bg,cg = stats.poisson.fit(ms)  
+pdf_poisson = stats.poisson.pdf(lnspc, ag, bg,cg)  
+plt.plot(lnspc, pdf_poisson, label="poisson")
 
-# plot poisson-deviation with fitted parameter
-x_plot = np.arange(0, 15)
+# exactly same as above
+ag,bg,cg = stats.nbinom.fit(ms)  
+pdf_nbinom = stats.nbinom.pdf(lnspc, ag, bg,cg)  
+plt.plot(lnspc, pdf_nbinom, label="nbinom")
 
-plt.plot(
-    x_plot,
-    fit_function(x_plot, *parameters),
-    marker='o', linestyle='',
-    label='Poisson fit result',
-)
 plt.legend()
 plt.savefig('epinano_nomod_mean_segment_lengths_distribution.png')
 plt.close()
@@ -64,21 +65,22 @@ plt.title('epinano_nomod_median_segment_lengths_distribution.png')
 plt.vlines(np.median(md), ymin = y_min, ymax=y_max)
 plt.text(np.median(md), y_max, 'median: ' + str(np.median(md)))
 
-# calculate bin centres
-bin_middles = 0.5 * (bin_edges[1:] + bin_edges[:-1])
+# find minimum and maximum of xticks, so we know
+# where we should compute theoretical distribution
+xt = plt.xticks()[0]  
+xmin, xmax = min(xt), max(xt)  
+lnspc = np.linspace(xmin, xmax, len(md))
 
-# fit with curve_fit
-parameters, cov_matrix = curve_fit(fit_function, bin_middles, entries)
+# exactly same as above
+ag,bg,cg = stats.poisson.fit(md)  
+pdf_poisson = stats.poisson.pdf(lnspc, ag, bg,cg)  
+plt.plot(lnspc, pdf_poisson, label="poisson")
 
-# plot poisson-deviation with fitted parameter
-x_plot = np.arange(0, 15)
+# exactly same as above
+ag,bg,cg = stats.nbinom.fit(md)  
+pdf_nbinom = stats.nbinom.pdf(lnspc, ag, bg,cg)  
+plt.plot(lnspc, pdf_nbinom, label="nbinom")
 
-plt.plot(
-    x_plot,
-    fit_function(x_plot, *parameters),
-    marker='o', linestyle='',
-    label='Poisson fit result',
-)
 plt.legend()
 plt.savefig('epinano_nomod_median_segment_lengths_distribution.png')
 plt.close()
