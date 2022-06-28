@@ -27,8 +27,8 @@ plt.hist(ms, bins=60, label='means', density=True)
 
 x = np.arange(min(ms), max(ms) + 1)
 
-plt.plot(x, stats.poisson.pmf(x, np.mean(ms)), 'go', label="poisson")
-plt.plot(x, stats.nbinom.pmf(x, np.mean(ms), np.mean(ms)/2), 'go', label="nbinom")
+plt.plot(x, stats.poisson.pmf(x, np.mean(ms)), 'go', label="poisson", color = 'orange')
+plt.plot(x, stats.nbinom.pmf(x, np.mean(ms), np.mean(ms)/2), 'go', label="nbinom", color = 'red')
 
 axes = plt.gca()
 ymin, ymax = axes.get_ylim()
@@ -47,8 +47,8 @@ plt.hist(md, bins=60, label='medians', density=True)
 
 x = np.arange(min(md), max(md) + 1)
 
-plt.plot(x, stats.poisson.pmf(x, np.mean(md)), 'go', label="poisson")
-plt.plot(x, stats.nbinom.pmf(x, np.mean(md), np.mean(md)/2), 'go', label="nbinom")
+plt.plot(x, stats.poisson.pmf(x, np.mean(md)), 'go', label="poisson", color = 'orange')
+plt.plot(x, stats.nbinom.pmf(x, np.mean(md), np.mean(md)/2), 'go', label="nbinom", color = 'red')
 
 axes = plt.gca()
 ymin, ymax = axes.get_ylim()
