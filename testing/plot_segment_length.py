@@ -110,14 +110,19 @@ plt.close()
 
 # ============================ DISTFIT ============================
 
+w = open('distfit_result.txt', 'w')
+
 dist = distfit(method='discrete')
 
-dist.fit_transform(ms)
-dist.plot()
-plt.savefig('distfit_means.png')
-plt.close()
+for data, string in zip([ms, md, logms, logmd], ['means', 'medians', 'logmeans', 'logmedians']):
+    
+    dist.fit_transform(data)
+    dist.plot()
+    plt.savefig(f'distfit_{string}.png')
+    plt.close()
 
-dist.fit_transform(md)
-dist.plot()
-plt.savefig('distfit_medians.png')
-plt.close()
+    w.write('string\n')
+    w.write(dist.model)
+    w.write('\n')
+    
+w.close()
