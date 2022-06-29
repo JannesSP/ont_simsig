@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import h5py
 from scipy import stats
-from distfit import distfit
+# from distfit import distfit
 
 f = '/home/yi98suv/projects/modbuster/data/epinano/nanopolish/nanopolish_segmentation_bases_2.hdf5'
 id_file = '/home/yi98suv/projects/modbuster/data/epinano/nanopolish/ids_nomod_rep1.ids'
@@ -27,12 +27,14 @@ md = np.array(md)
 # ============================ MEANS ============================
 
 # the bins should be of integer width, because poisson is an integer distribution
-plt.title('EpiNano unmodified mean segment lengths distribution')
+plt.title(f'EpiNano unmodified mean segment lengths distribution\nn={len(ms)}')
 plt.hist(ms, bins=60, label='means', density=True)
 
 x = np.arange(min(ms), max(ms) + 1)
 
-plt.plot(x, stats.poisson.pmf(x, np.mean(ms)), marker='o', label="poisson")
+fit_alpha, fit_loc, fit_beta=stats.gamma.fit(ms)
+y = stats.gamma.pdf(x, a=fit_alpha, loc = fit_loc, scale = 1/fit_beta)
+plt.plot(y, label = 'gamma')
 
 axes = plt.gca()
 ymin, ymax = axes.get_ylim()
@@ -40,6 +42,7 @@ plt.vlines(np.median(ms), ymin = ymin, ymax=ymax, color = 'red')
 plt.text(np.median(ms), ymax, 'median: ' + str(np.median(ms)))
 
 plt.legend()
+plt.tight_layout()
 plt.savefig('epinano_nomod_mean_segment_lengths_distribution.png')
 plt.close()
 
@@ -47,12 +50,14 @@ plt.close()
 # ============================ MEDIANS ============================
 
 # the bins should be of integer width, because poisson is an integer distribution
-plt.title('EpiNano unmodified median segment lengths distribution')
+plt.title(f'EpiNano unmodified median segment lengths distribution\nn={len(md)}')
 plt.hist(md, bins=60, label='medians', density=True)
 
 x = np.arange(min(md), max(md) + 1)
 
-plt.plot(x, stats.poisson.pmf(x, np.mean(md)), marker='o', label="poisson")
+fit_alpha, fit_loc, fit_beta=stats.gamma.fit(md)
+y = stats.gamma.pdf(x, a=fit_alpha, loc = fit_loc, scale = 1/fit_beta)
+plt.plot(y, label = 'gamma')
 
 axes = plt.gca()
 ymin, ymax = axes.get_ylim()
@@ -60,6 +65,7 @@ plt.vlines(np.median(md), ymin = ymin, ymax=ymax, color = 'red')
 plt.text(np.median(md), ymax, 'median: ' + str(np.median(md)))
 
 plt.legend()
+plt.tight_layout()
 plt.savefig('epinano_nomod_median_segment_lengths_distribution.png')
 plt.close()
 
@@ -67,12 +73,14 @@ plt.close()
 
 logms = np.log(ms)
 # the bins should be of integer width, because poisson is an integer distribution
-plt.title('EpiNano unmodified log mean segment lengths distribution')
+plt.title(f'EpiNano unmodified log mean segment lengths distribution\nn={len(logms)}')
 plt.hist(logms, bins=60, label='logmeans', density=True)
 
 x = np.arange(min(logms), max(logms) + 1)
 
-plt.plot(x, stats.poisson.pmf(x, np.mean(logms)), marker='o', label="poisson")
+fit_alpha, fit_loc, fit_beta=stats.gamma.fit(logms)
+y = stats.gamma.pdf(x, a=fit_alpha, loc = fit_loc, scale = 1/fit_beta)
+plt.plot(y, label = 'gamma')
 
 axes = plt.gca()
 ymin, ymax = axes.get_ylim()
@@ -80,6 +88,7 @@ plt.vlines(np.median(logms), ymin = ymin, ymax=ymax, color = 'red')
 plt.text(np.median(logms), ymax, 'median: ' + str(np.median(logms)))
 
 plt.legend()
+plt.tight_layout()
 plt.savefig('epinano_nomod_logmean_segment_lengths_distribution.png')
 plt.close()
 
@@ -88,12 +97,14 @@ plt.close()
 
 logmd = np.log(md)
 # the bins should be of integer width, because poisson is an integer distribution
-plt.title('EpiNano unmodified log median segment lengths distribution')
+plt.title(f'EpiNano unmodified log median segment lengths distribution\nn={len(logms)}')
 plt.hist(logmd, bins=60, label='logmedians', density=True)
 
 x = np.arange(min(logmd), max(logmd) + 1)
 
-plt.plot(x, stats.poisson.pmf(x, np.mean(logmd)), marker='o', label="poisson")
+fit_alpha, fit_loc, fit_beta=stats.gamma.fit(logmd)
+y = stats.gamma.pdf(x, a=fit_alpha, loc = fit_loc, scale = 1/fit_beta)
+plt.plot(y, label = 'gamma')
 
 axes = plt.gca()
 ymin, ymax = axes.get_ylim()
@@ -101,35 +112,36 @@ plt.vlines(np.median(logmd), ymin = ymin, ymax=ymax, color = 'red')
 plt.text(np.median(logmd), ymax, 'median: ' + str(np.median(logmd)))
 
 plt.legend()
+plt.tight_layout()
 plt.savefig('epinano_nomod_logmedian_segment_lengths_distribution.png')
 plt.close()
 
 # ============================ DISTFIT ============================
 
-w = open('distfit_result.txt', 'w')
+# w = open('distfit_result.txt', 'w')
 
-dist = distfit(method='discrete')
+# dist = distfit(method='discrete')
 
-for data, string in zip([ms, md], ['means', 'medians']):
+# for data, string in zip([ms, md], ['means', 'medians']):
     
-    dist.fit_transform(data)
-    dist.plot()
-    plt.savefig(f'distfit_{string}.png')
-    plt.close()
+#     dist.fit_transform(data)
+#     dist.plot()
+#     plt.savefig(f'distfit_{string}.png')
+#     plt.close()
 
-    w.write('string\n')
-    w.write(str(dist.model) + '\n')
+#     w.write('string\n')
+#     w.write(str(dist.model) + '\n')
 
-dist = distfit()
+# dist = distfit()
 
-for data, string in zip([logms, logmd], ['logmeans', 'logmedians']):
+# for data, string in zip([logms, logmd], ['logmeans', 'logmedians']):
     
-    dist.fit_transform(data)
-    dist.plot()
-    plt.savefig(f'distfit_{string}.png')
-    plt.close()
+#     dist.fit_transform(data)
+#     dist.plot()
+#     plt.savefig(f'distfit_{string}.png')
+#     plt.close()
 
-    w.write('string\n')
-    w.write(str(dist.model) + '\n')
+#     w.write('string\n')
+#     w.write(str(dist.model) + '\n')
 
-w.close()
+# w.close()
