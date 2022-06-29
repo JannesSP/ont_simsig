@@ -25,16 +25,12 @@ ms = np.array(ms)
 md = np.array(md)
 
 # ============================ MEANS ============================
-
+print('Plotting means')
 # the bins should be of integer width, because poisson is an integer distribution
 plt.title(f'EpiNano unmodified mean segment lengths distribution\nn={len(ms)}')
 plt.hist(ms, bins=60, label='means', density=True)
 
-x = np.arange(min(ms), max(ms) + 1)
-
-fit_alpha, fit_loc, fit_beta=stats.gamma.fit(ms)
-y = stats.gamma.pdf(x, a=fit_alpha, loc = fit_loc, scale = 1/fit_beta)
-plt.plot(y, label = 'gamma')
+# x = np.arange(min(ms), max(ms) + 1)
 
 axes = plt.gca()
 ymin, ymax = axes.get_ylim()
@@ -48,16 +44,12 @@ plt.close()
 
 
 # ============================ MEDIANS ============================
-
+print('Plotting medians')
 # the bins should be of integer width, because poisson is an integer distribution
 plt.title(f'EpiNano unmodified median segment lengths distribution\nn={len(md)}')
 plt.hist(md, bins=60, label='medians', density=True)
 
-x = np.arange(min(md), max(md) + 1)
-
-fit_alpha, fit_loc, fit_beta=stats.gamma.fit(md)
-y = stats.gamma.pdf(x, a=fit_alpha, loc = fit_loc, scale = 1/fit_beta)
-plt.plot(y, label = 'gamma')
+# x = np.arange(min(md), max(md) + 1)
 
 axes = plt.gca()
 ymin, ymax = axes.get_ylim()
@@ -70,17 +62,13 @@ plt.savefig('epinano_nomod_median_segment_lengths_distribution.png')
 plt.close()
 
 # ============================ LOG MEANS ============================
-
+print('Plotting logmeans')
 logms = np.log(ms)
 # the bins should be of integer width, because poisson is an integer distribution
 plt.title(f'EpiNano unmodified log mean segment lengths distribution\nn={len(logms)}')
 plt.hist(logms, bins=60, label='logmeans', density=True)
 
-x = np.arange(min(logms), max(logms) + 1)
-
-fit_alpha, fit_loc, fit_beta=stats.gamma.fit(logms)
-y = stats.gamma.pdf(x, a=fit_alpha, loc = fit_loc, scale = 1/fit_beta)
-plt.plot(y, label = 'gamma')
+# x = np.arange(min(logms), max(logms) + 1)
 
 axes = plt.gca()
 ymin, ymax = axes.get_ylim()
@@ -94,17 +82,13 @@ plt.close()
 
 
 # ============================ LOG MEDIANS ============================
-
+print('Plotting logmedians')
 logmd = np.log(md)
 # the bins should be of integer width, because poisson is an integer distribution
 plt.title(f'EpiNano unmodified log median segment lengths distribution\nn={len(logms)}')
 plt.hist(logmd, bins=60, label='logmedians', density=True)
 
-x = np.arange(min(logmd), max(logmd) + 1)
-
-fit_alpha, fit_loc, fit_beta=stats.gamma.fit(logmd)
-y = stats.gamma.pdf(x, a=fit_alpha, loc = fit_loc, scale = 1/fit_beta)
-plt.plot(y, label = 'gamma')
+# x = np.arange(min(logmd), max(logmd) + 1)
 
 axes = plt.gca()
 ymin, ymax = axes.get_ylim()
