@@ -1,8 +1,0 @@
-string
-{'name': 'binom', 'distr': <scipy.stats._discrete_distns.binom_gen object at 0x14898010d4b0>, 'model': <scipy.stats._distn_infrastructure.rv_frozen object at 0x1489755e0d90>, 'params': (2, 0.5000279604145869), 'score': 0.3975625168992162, 'chi2r': 0.00220868064944009, 'n': 2, 'p': 0.5000279604145869, 'CII_min_alpha': 0.0, 'CII_max_alpha': 2.0}
-string
-{'name': 'binom', 'distr': <scipy.stats._discrete_distns.binom_gen object at 0x14898010d4b0>, 'model': <scipy.stats._distn_infrastructure.rv_frozen object at 0x1489755e0d90>, 'params': (400, 0.08233293995367427), 'score': 0.01628481853302019, 'chi2r': 0.00021427392806605514, 'n': 400, 'p': 0.08233293995367427, 'CII_min_alpha': 24.0, 'CII_max_alpha': 42.0}
-string
-{'distr': <scipy.stats._continuous_distns.genextreme_gen object at 0x14898067dde0>, 'stats': 'RSS', 'params': (0.08863228923630231, 3.86839747895616, 0.2279861186981766), 'name': 'genextreme', 'model': <scipy.stats._distn_infrastructure.rv_frozen object at 0x14897d7ed8a0>, 'score': 0.2275102654452909, 'loc': 3.86839747895616, 'scale': 0.2279861186981766, 'arg': (0.08863228923630231,), 'CII_min_alpha': 3.6056868639568935, 'CII_max_alpha': 4.463760182029731}
-string
-{'distr': <scipy.stats._continuous_distns.genextreme_gen object at 0x14898067dde0>, 'stats': 'RSS', 'params': (0.06364188380714056, 3.3587743763299414, 0.13370947672478262), 'name': 'genextreme', 'model': <scipy.stats._distn_infrastructure.rv_frozen object at 0x14897512e860>, 'score': 10.488521790717929, 'loc': 3.3587743763299414, 'scale': 0.13370947672478262, 'arg': (0.06364188380714056,), 'CII_min_alpha': 3.2068265410767682, 'CII_max_alpha': 3.720639309211077}
