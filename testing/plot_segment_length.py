@@ -34,8 +34,9 @@ plt.hist(ms, bins=60, label='means', density=True)
 
 axes = plt.gca()
 ymin, ymax = axes.get_ylim()
-plt.vlines(np.median(ms), ymin = ymin, ymax=ymax, color = 'red')
-plt.text(np.median(ms), ymax, 'median: ' + str(np.median(ms)))
+plt.vlines([np.mean(ms), np.median(ms)], ymin = ymin, ymax=ymax, color = 'red')
+plt.text(np.mean(ms), ymax, 'mean: ' + str(np.mean(ms)))
+plt.text(np.median(ms), ymax - .005, 'median: ' + str(np.median(ms)))
 
 plt.legend()
 plt.tight_layout()
@@ -53,7 +54,8 @@ plt.hist(md, bins=60, label='medians', density=True)
 
 axes = plt.gca()
 ymin, ymax = axes.get_ylim()
-plt.vlines(np.median(md), ymin = ymin, ymax=ymax, color = 'red')
+plt.vlines([np.mean(md), np.median(md)], ymin = ymin, ymax=ymax, color = 'red')
+plt.text(np.mean(md), ymax, 'mean: ' + str(np.mean(md)))
 plt.text(np.median(md), ymax, 'median: ' + str(np.median(md)))
 
 plt.legend()
@@ -72,7 +74,8 @@ plt.hist(logms, bins=60, label='logmeans', density=True)
 
 axes = plt.gca()
 ymin, ymax = axes.get_ylim()
-plt.vlines(np.median(logms), ymin = ymin, ymax=ymax, color = 'red')
+plt.vlines([np.mean(logms), np.median(logms)], ymin = ymin, ymax=ymax, color = 'red')
+plt.text(np.mean(logms), ymax, 'mean: ' + str(np.mean(logms)))
 plt.text(np.median(logms), ymax, 'median: ' + str(np.median(logms)))
 
 plt.legend()
@@ -92,7 +95,8 @@ plt.hist(logmd, bins=60, label='logmedians', density=True)
 
 axes = plt.gca()
 ymin, ymax = axes.get_ylim()
-plt.vlines(np.median(logmd), ymin = ymin, ymax=ymax, color = 'red')
+plt.vlines([np.mean(logmd), np.median(logmd)], ymin = ymin, ymax=ymax, color = 'red')
+plt.text(np.mean(logmd), ymax, 'mean: ' + str(np.mean(logmd)))
 plt.text(np.median(logmd), ymax, 'median: ' + str(np.median(logmd)))
 
 plt.legend()
