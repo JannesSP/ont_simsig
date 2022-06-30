@@ -1,18 +1,19 @@
 import pandas as pd
 import os
-from Reference import RNASimulator
+from Simulator import RNASimulator
 from Writer import RNAWriter
 
 # Loading model
 kmer_model_file = os.path.join(os.path.dirname(__file__), '..', 'data', 'template_median69pA.model')
 df = pd.read_csv(kmer_model_file, sep='\t')
+# kmers are stored from 3' to 5'
 kmer_dict = {key : (mean, std) for key, mean, std in zip(df['kmer'], df['level_mean'], df['level_stdv'])}
 
 print('Simulate RNA reads')
 rna = RNASimulator(kmer_dict, length=20000, suffix='A'*50)
 reference = rna.getReference()
-signals = rna.drawRefSignals(12)
+signals = rna.drawRefSignals(20)
 
-# writer = RNAWriter(reference, path=os.path.join('data','simulation'), dedicated_filename='test')
-# writer.writeReads(signals)
+writer = RNAWriter(reference, path=os.path.join('data','simulation'), dedicated_filename='test')
+writer.writeReads(signals)
 

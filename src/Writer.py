@@ -34,7 +34,7 @@ class RNAWriter():
         self.datetime = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
         
         if dedicated_filename is not None:
-            self.filename = dedicated_filename
+            self.filename = join(path, dedicated_filename)
         else:
             self.filename = join(path, f'RNA_simulation_{self.date}_batch')
         
