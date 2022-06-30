@@ -14,7 +14,7 @@ df = pd.read_csv(kmer_model_file, sep='\t')
 kmer_dict = {key : (mean, std) for key, mean, std in zip(df['kmer'], df['level_mean'], df['level_stdv'])}
 
 print('Simulate RNA reads')
-rna = RNASimulator(kmer_dict, length=20000, suffix='A'*50)
+rna = RNASimulator(kmer_dict, length=2000, suffix='A'*50)
 reference = rna.getReference()
 num_of_signals = 12
 signals = rna.drawRefSignals(num_of_signals)
@@ -28,12 +28,12 @@ if not os.path.exists('plots'):
 print('Plotting testdata')
 fig, axs = plt.subplots(2, 3, figsize=(20,10))
 for i, (signal, borders) in enumerate(signals[:3]):
-    axs[0, i].plot(signal, alpha = 0.3)
+    axs[0, i].plot(signal)
     ylim = axs[0, i].get_ylim()
     xlim = axs[0, i].get_xlim()
     axs[0, i].text(xlim[0] + .05*(xlim[1]-xlim[0]), ylim[1] - .05*(ylim[1]-ylim[0]), '3\'', fontsize=13)
     axs[0, i].text(xlim[1] - .05*(xlim[1]-xlim[0]), ylim[1] - .05*(ylim[1]-ylim[0]), '5\'', fontsize=13)
-    axs[1, i].hist(diff(borders), bins=100, alpha = 0.3, density = True)
+    axs[1, i].hist(diff(borders), bins=100, density = True)
 
 axs[0, 0].set_ylabel('SIGNAL in pA')
 axs[0, 3//2].set_xlabel('DATAPOINTS (~3 kHz)')
