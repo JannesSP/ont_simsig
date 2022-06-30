@@ -1,5 +1,6 @@
 from datetime import datetime
-from os.path import join
+from os.path import join, exists
+from os import makedirs
 from typing import Iterable
 
 import h5py
@@ -37,6 +38,9 @@ class RNAWriter():
             self.filename = join(path, dedicated_filename)
         else:
             self.filename = join(path, f'RNA_simulation_{self.date}_batch')
+            
+        if not exists(path):
+            makedirs(path)
         
         self.__initH5()
         self.__initSum()
