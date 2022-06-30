@@ -58,6 +58,7 @@ class RNASimulator():
         '''
         Model to simulate the segment length in a RNA read
         '''
+        # TODO maybe add a small binomial or int(gaussian) distribution to reduce number of very small events
         return np.random.exponential(self.exp_m, 1).astype(int).item()
 
     def __drawSegmentSignal(self, kmer : str, length : int) -> np.ndarray:
