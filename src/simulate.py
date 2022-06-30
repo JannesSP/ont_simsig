@@ -9,9 +9,10 @@ df = pd.read_csv(kmer_model_file, sep='\t')
 kmer_dict = {key : (mean, std) for key, mean, std in zip(df['kmer'], df['level_mean'], df['level_stdv'])}
 
 print('Simulate RNA reads')
-rna = RNASimulator(kmer_dict)
+rna = RNASimulator(kmer_dict, length=20000, suffix='A'*50)
 reference = rna.getReference()
-signals = rna.drawRefSignals(100)
+signals = rna.drawRefSignals(12)
 
-writer = RNAWriter(reference, path=os.path.join('data','simulation'), dedicated_filename='test')
-writer.writeReads(signals)
+# writer = RNAWriter(reference, path=os.path.join('data','simulation'), dedicated_filename='test')
+# writer.writeReads(signals)
+

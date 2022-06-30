@@ -149,9 +149,9 @@ class RNASimulator():
         Returns
         -------
         sim_signals : np.ndarray
-            a numpy array representing the simulated signal according the given kmer_model
+            a numpy array representing the simulated signal according the given kmer_model from 5' to 3' end
         borders : np.ndarray
-            an array containing the segment borders starting with 0
+            an array containing the segment borders starting with 0 at the 5' end
         '''
         
         if stop is not None:
