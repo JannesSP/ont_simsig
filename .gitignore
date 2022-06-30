@@ -130,3 +130,4 @@ dmypy.json
 data/simulation/test_reference.fasta
 data/simulation/test_sequencing_summary.txt
 data/simulation/test0.fast5
+plots/simulation.png

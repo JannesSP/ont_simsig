@@ -24,6 +24,7 @@ writer.writeReads(signals)
 if not os.path.exists('plots'):
     os.makedirs('plots')
 
+print('Plotting testdata')
 figs, axs = plt.subplots(2, 1, figsize=(10,10))
 for signal, borders in signals:
     axs[0].plot(signal, alpha = 0.5)
