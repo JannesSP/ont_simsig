@@ -36,10 +36,10 @@ for i, (signal, borders) in enumerate(signals[:3]):
     axs[1, i].hist(diff(borders), bins=100, alpha = 0.3, density = True)
 
 axs[0, 0].set_ylabel('SIGNAL in pA')
-axs[0, 3//2].set_xlabel('datapoints/time (~3 kHz)')
+axs[0, 3//2].set_xlabel('DATAPOINTS (~3 kHz)')
 
 axs[1, 0].set_ylabel('FREQUENCY in density per read')
-axs[1, 3//2].set_xlabel('segment length in datapoints')
+axs[1, 3//2].set_xlabel('SEGMENT-LENGTH in datapoints')
     
 fig.suptitle('SIMULATED RNA READS')
 plt.tight_layout()
