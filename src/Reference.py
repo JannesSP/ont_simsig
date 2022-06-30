@@ -44,11 +44,14 @@ class RNASimulator():
 
         if reference is None:
             self.reference = self.prefix + ''.join(random.choices(self.alphabet, k=length)) + self.suffix
-            self.length = len(self.prefix) + self.length + len(self.suffix)
+            self.length = len(self.prefix) + length + len(self.suffix)
         else:
             assert len(reference) > 4, f'Reference sequence too small ({len(reference)}), cannot initialize'
             self.reference = self.prefix + reference + self.suffix
             self.length = len(self.reference)
+
+        for nucl in self.reference:
+            assert nucl in self.alphabet, f'Reference contains a nucleotide ({nucl}) that is not in the alphabet ({self.alphabet})!'
 
     def __drawSegmentLength__(self) -> int:
         '''
@@ -62,6 +65,9 @@ class RNASimulator():
 
     def getRefLength(self) -> int:
         return self.length
+
+    def getReference(self) -> str:
+        return self.reference
 
     def drawReadSignals(self, n : int, max_len : int, min_len : int = 5) -> list[tuple[np.ndarray, np.ndarray]]:
         '''
@@ -86,6 +92,26 @@ class RNASimulator():
         assert n > 0
         return [self.__drawSignal__(stop = np.random.randint(min_len, max_len, size = 1, dtype = int).item()) for _ in range(n)]
 
+    def drawReadSignal(self, max_len : int, min_len : int = 5) -> tuple[np.ndarray, np.ndarray]:
+        '''
+        Generates n read signal starting from 3' (RNA) end of the reference and stopping after a uniformly drawn number of bases
+
+        Parameters
+        ----------
+        max_len : int
+            max length of the used reference
+        min_len : int
+            min length of the used reference
+
+        Returns
+        -------
+        sim_signals : np.ndarray
+            a numpy array representing the simulated signal according the given kmer_model
+        borders : np.ndarray
+            an array containing the segment borders starting with 0
+        '''
+        return self.__drawSignal__(stop = np.random.randint(min_len, max_len, size = 1, dtype = int).item())
+
     def drawRefSignals(self, n : int) -> list[tuple[np.ndarray, np.ndarray]]:
         '''
         Generates n read signal starting from 3' (RNA) end of the reference and stopping after a uniformly drawn number of bases
@@ -97,6 +123,12 @@ class RNASimulator():
         '''
         assert n > 0
         return [self.__drawSignal__() for _ in range(n)]
+
+    def drawRefSignal(self) -> tuple[np.ndarray, np.ndarray]:
+        '''
+        Generates 1 read signal starting from 3' (RNA) end of the reference and stopping after a uniformly drawn number of bases
+        '''
+        return self.__drawSignal__()
 
     def __drawSignal__(self, stop : int = None) -> tuple[np.ndarray, np.ndarray]:
         '''
