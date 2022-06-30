@@ -78,7 +78,7 @@ class RNASimulator():
 
     def drawReadSignals(self, n : int, max_len : int, min_len : int = 5) -> Iterable[tuple[np.ndarray, np.ndarray]]:
         '''
-        Generates n read signal starting from 3' (RNA) end of the reference and stopping after a uniformly drawn number of bases
+        Generates n read signal starting from 3' (RNA) end of the reference and stopping after a uniformly drawn number of bases of the interval [min_len, max_len)
 
         Parameters
         ----------
@@ -97,6 +97,9 @@ class RNASimulator():
             an array containing the segment borders starting with 0
         '''
         assert n > 0
+        assert min_len < max_len
+        assert max_len < self.length
+        assert min_len >= 5
         return np.array([self.__drawSignal(stop = np.random.randint(min_len, max_len, size = 1, dtype = int).item()) for _ in range(n)])
 
     def drawReadSignal(self, max_len : int, min_len : int = 5) -> tuple[np.ndarray, np.ndarray]:
