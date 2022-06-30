@@ -1,0 +1,1 @@
+# TODO test created fast5 file for errors and stuff

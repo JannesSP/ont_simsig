@@ -181,7 +181,7 @@ class RNASimulator():
         borders = np.zeros(len(reference) - 3, dtype = int)
 
         for n in range(len(reference) - 5):
-            # kmer_model is in 5' -> 3' orientation, same as reference here
+            # kmer_model is in 3' -> 5' orientation, same as reference here
             kmer = reference[n:n+5]
             segment_length = self.__drawSegmentLength()
 
