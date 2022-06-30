@@ -1,4 +1,5 @@
 import random
+from typing import Iterable
 import numpy as np
 
 class RNASimulator():
@@ -69,7 +70,7 @@ class RNASimulator():
     def getReference(self) -> str:
         return self.reference
 
-    def drawReadSignals(self, n : int, max_len : int, min_len : int = 5) -> list[tuple[np.ndarray, np.ndarray]]:
+    def drawReadSignals(self, n : int, max_len : int, min_len : int = 5) -> Iterable[tuple[np.ndarray, np.ndarray]]:
         '''
         Generates n read signal starting from 3' (RNA) end of the reference and stopping after a uniformly drawn number of bases
 
@@ -90,7 +91,7 @@ class RNASimulator():
             an array containing the segment borders starting with 0
         '''
         assert n > 0
-        return [self.__drawSignal__(stop = np.random.randint(min_len, max_len, size = 1, dtype = int).item()) for _ in range(n)]
+        return np.array([self.__drawSignal__(stop = np.random.randint(min_len, max_len, size = 1, dtype = int).item()) for _ in range(n)])
 
     def drawReadSignal(self, max_len : int, min_len : int = 5) -> tuple[np.ndarray, np.ndarray]:
         '''
@@ -112,7 +113,7 @@ class RNASimulator():
         '''
         return self.__drawSignal__(stop = np.random.randint(min_len, max_len, size = 1, dtype = int).item())
 
-    def drawRefSignals(self, n : int) -> list[tuple[np.ndarray, np.ndarray]]:
+    def drawRefSignals(self, n : int) -> Iterable[tuple[np.ndarray, np.ndarray]]:
         '''
         Generates n read signal starting from 3' (RNA) end of the reference and stopping after a uniformly drawn number of bases
 
@@ -122,7 +123,13 @@ class RNASimulator():
             number of generated signals
         '''
         assert n > 0
-        return [self.__drawSignal__() for _ in range(n)]
+        sims = []
+        for i in range(n):
+            if (i+1)%10==0:
+                print(f'Simulating read {i + 1}\{n} ...', end = '\r')
+            sims.append(self.__drawSignal__())
+        print(f'Done simulating {n} reads  ')
+        return sims
 
     def drawRefSignal(self) -> tuple[np.ndarray, np.ndarray]:
         '''
@@ -175,4 +182,4 @@ class RNASimulator():
             borders[border_pionter] = signal_pointer
             border_pionter += 1
 
-        return sim_signal[:signal_pointer], borders
+        return sim_signal[:signal_pointer], borders[:border_pionter]

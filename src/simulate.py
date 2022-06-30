@@ -1,18 +1,17 @@
 import pandas as pd
-# import numpy as np
-import matplotlib.pyplot as plt
 import os
-# import random
-# from scipy import stats
 from Reference import RNASimulator
+from Writer import RNAWriter
 
+# Loading model
 kmer_model_file = os.path.join(os.path.dirname(__file__), '..', 'data', 'template_median69pA.model')
 df = pd.read_csv(kmer_model_file, sep='\t')
 kmer_dict = {key : (mean, std) for key, mean, std in zip(df['kmer'], df['level_mean'], df['level_stdv'])}
 
+print('Simulate RNA reads')
 rna = RNASimulator(kmer_dict)
+reference = rna.getReference()
+signals = rna.drawRefSignals(100)
 
-test_signal, test_borders = rna.drawRefSignal()
-
-plt.plot(test_signal)
-plt.show()
+writer = RNAWriter(reference, path=os.path.join('data','simulation'), dedicated_filename='test')
+writer.writeReads(signals)
