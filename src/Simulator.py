@@ -1,5 +1,5 @@
 from random import choices
-from typing import Iterable
+from typing import Iterable, Tuple
 import numpy as np
 
 class RNASimulator():
@@ -77,7 +77,7 @@ class RNASimulator():
         '''
         return self.reference
 
-    def drawReadSignals(self, n : int, max_len : int, min_len : int = 5) -> Iterable[tuple[np.ndarray, np.ndarray]]:
+    def drawReadSignals(self, n : int, max_len : int, min_len : int = 5) -> Iterable[Tuple[np.ndarray, np.ndarray]]:
         '''
         Generates n read signal starting from 3' (RNA) end of the reference and stopping after a uniformly drawn number of bases of the interval [min_len, max_len)
 
@@ -103,7 +103,7 @@ class RNASimulator():
         assert min_len >= 5
         return np.array([self.__drawSignal(stop = np.random.randint(min_len, max_len, size = 1, dtype = int).item()) for _ in range(n)])
 
-    def drawReadSignal(self, max_len : int, min_len : int = 5) -> tuple[np.ndarray, np.ndarray]:
+    def drawReadSignal(self, max_len : int, min_len : int = 5) -> Tuple[np.ndarray, np.ndarray]:
         '''
         Generates n read signal starting from 3' (RNA) end of the reference and stopping after a uniformly drawn number of bases
 
@@ -123,7 +123,7 @@ class RNASimulator():
         '''
         return self.__drawSignal(stop = np.random.randint(min_len, max_len, size = 1, dtype = int).item())
 
-    def drawRefSignals(self, n : int) -> Iterable[tuple[np.ndarray, np.ndarray]]:
+    def drawRefSignals(self, n : int) -> Iterable[Tuple[np.ndarray, np.ndarray]]:
         '''
         Generates n read signal starting from 3' (RNA) end of the reference and stopping after a uniformly drawn number of bases
 
@@ -136,18 +136,18 @@ class RNASimulator():
         sims = []
         for i in range(n):
             if (i+1)%10==0:
-                print(f'Simulating read {i + 1}\{n} ...', end = '\r')
+                print(f'Simulating read {i + 1}\\{n} ...', end = '\r')
             sims.append(self.__drawSignal())
         print(f'Done simulating {n} reads  ')
         return sims
 
-    def drawRefSignal(self) -> tuple[np.ndarray, np.ndarray]:
+    def drawRefSignal(self) -> Tuple[np.ndarray, np.ndarray]:
         '''
         Generates 1 read signal starting from 3' (RNA) end of the reference and stopping after a uniformly drawn number of bases
         '''
         return self.__drawSignal()
 
-    def __drawSignal(self, stop : int = None) -> tuple[np.ndarray, np.ndarray]:
+    def __drawSignal(self, stop : int = None) -> Tuple[np.ndarray, np.ndarray]:
         '''
         Generates a read signal from the whole reference
 

@@ -1,6 +1,8 @@
-from src.Simulator import RNASimulator
 import os
+import sys
 import pandas as pd
+sys.path.append("..")
+from ..src.Simulator import RNASimulator
 
 def readData():
     kmer_model_file = os.path.join(os.path.dirname(__file__), '..', 'data', 'template_median69pA.model')
