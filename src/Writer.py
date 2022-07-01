@@ -108,7 +108,7 @@ class RNAWriter():
             raw.attrs.create('duration', data=len(signal), dtype=np.uint32)
             raw.attrs.create('end_reason', data=5, dtype=np.uint8)
             raw.attrs.create('median_before', data=np.random.normal(217.59, 22.53), dtype=np.float64) # approximated from some real data
-            raw.attrs.create('read_id', data=self.read_num, dtype=np.uint32)
+            raw.attrs.create('read_id', data=self.read_num, dtype=np.string_)
             raw.attrs.create('read_number', data=self.read_num, dtype=np.int32)
             raw.attrs.create('start_mux', data=0, dtype=np.uint8)
             raw.attrs.create('start_time', data=self.start_time, dtype=np.uint64)
