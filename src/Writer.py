@@ -98,7 +98,7 @@ class RNAWriter():
                 self.h5.create_dataset("Reference", data=np.string_(self.reference))
             
             readid = 'read_' + str(self.read_num)
-            channel_number = np.random.randint(1, 513)
+            channel_number = str(np.random.randint(1, 513))
 
             read = self.h5.create_group(readid)
             read.attrs.create('pore_type', data=np.bytes_('not_set'))
@@ -108,23 +108,23 @@ class RNAWriter():
             raw.attrs.create('duration', data=len(signal), dtype=np.uint32)
             raw.attrs.create('end_reason', data=5, dtype=np.uint8)
             raw.attrs.create('median_before', data=np.random.normal(217.59, 22.53), dtype=np.float64) # approximated from some real data
-            raw.attrs.create('read_id', data=self.read_num, dtype=np.string_)
+            raw.attrs.create('read_id', data=str(self.read_num))
             raw.attrs.create('read_number', data=self.read_num, dtype=np.int32)
             raw.attrs.create('start_mux', data=0, dtype=np.uint8)
             raw.attrs.create('start_time', data=self.start_time, dtype=np.uint64)
-            raw.create_dataset('Signal', data=signal, dtype=np.float64)
+            raw.create_dataset('Signal', data=np.ceil(signal * (8192/1119.071533203125) + 0), dtype=np.int16) # from sarscov2 kiel data 22195
             
             # EXTRA INFORMATION
             raw.attrs.create('num_segments', data=len(borders) - 1, dtype=np.uint64)
             raw.create_dataset('Borders', data=borders, dtype=np.uint64)
             
             channel_id = read.create_group('channel_id')
-            channel_id.attrs.create('channel_number', data=channel_number, dtype=np.uint16)
+            channel_id.attrs.create('channel_number', data=np.bytes_(channel_number))
             # current = (Dacs + offset ) * range / digitisation = (Dacs + 0) * (1 / 1) <=> current = Dacs in this case
-            channel_id.attrs.create('digitisation', data=1, dtype=np.uint8) # always set to 1
-            channel_id.attrs.create('offset', data=0, dtype=np.uint8) # always set to 0
-            channel_id.attrs.create('range', data=1, dtype=np.uint8) # always set to 1
-            channel_id.attrs.create('sampling_rate', data=3012, dtype=np.uint16) # always set to 3012 Hz
+            channel_id.attrs.create('digitisation', data=8192, dtype=np.float64) # from sarscov2 kiel data 22195
+            channel_id.attrs.create('offset', data=0, dtype=np.float64) # from sarscov2 kiel data 22195 (can change, not always 0)
+            channel_id.attrs.create('range', data=1119.071533203125, dtype=np.float64) # from sarscov2 kiel data 22195
+            channel_id.attrs.create('sampling_rate', data=3012, dtype=np.float64) # always set to 3012 Hz
             
             context_tags = read.create_group('context_tags')
             context_tags.attrs.create('barcoding_enabled', data=np.bytes_(self.barcoded))
