@@ -18,17 +18,19 @@ reference = rna.getReference()
 num_of_signals = 4000
 
 print('Simulate RNA reads')
-# signals = rna.drawRefSignals(num_of_signals)
-signals = rna.drawReadSignals(num_of_signals, min_len=1000, max_len=2000)
-print(f'Simulated {rna.getNumSimReads()} reads')
+signals = rna.drawRefSignals(num_of_signals)
+# signals = rna.drawReadSignals(num_of_signals, min_len=1000, max_len=2000)
 
-writer = RNAWriter(reference, path=os.path.join(os.path.dirname(__file__), '..', 'data','simulation'))
+path = os.path.join(os.path.dirname(__file__), '..', 'data','simulation')
+writer = RNAWriter(reference, path=path)
 writer.writeReads(signals)
 
 if not os.path.exists('plots'):
     os.makedirs('plots')
 
 print('Plotting testdata')
+
+# =============== Plotting first 3 reads ===============
 fig, axs = plt.subplots(2, 3, figsize=(20,10))
 for i, (signal, borders) in enumerate(signals[:3]):
     axs[0, i].plot(signal)
@@ -47,4 +49,15 @@ axs[1, 3//2].set_xlabel('SEGMENT-LENGTH in datapoints')
     
 fig.suptitle(f'SIMULATED RNA READS\nReference length: {rna.getRefLength()}')
 plt.tight_layout()
-plt.savefig(os.path.join('plots','simulation.png'))
+plt.savefig(os.path.join(path,'simulation.png'))
+plt.close()
+
+# =============== Plotting whole read lengths and segmentation distribution ===============
+lengths = [len(read) for read in signals[:, 0]]
+plt.hist(lengths)
+plt.title('Signal lengths distribution')
+plt.xlabel('Signal length')
+plt.ylabel('Frequency')
+plt.tight_layout()
+plt.savefig(os.path.join(path,'signal_lengths.png'))
+plt.close()

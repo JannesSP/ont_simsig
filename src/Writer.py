@@ -35,6 +35,7 @@ class RNAWriter():
         self.datetime_clean = datetime.now().strftime("%Y%m%d_%H%M%S")
         self.datetime = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
 
+        path = join(path, f'RNA_simulation_{self.datetime_clean}')
         if dedicated_filename is not None:
             self.filename = join(path, dedicated_filename)
         else:
