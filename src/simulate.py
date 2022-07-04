@@ -49,11 +49,11 @@ axs[1, 3//2].set_xlabel('SEGMENT-LENGTH in datapoints')
     
 fig.suptitle(f'SIMULATED RNA READS\nReference length: {rna.getRefLength()}')
 plt.tight_layout()
-plt.savefig(os.path.join(path,'simulation.png'))
+plt.savefig(os.path.join(writer.getFilename() + 'simulation.png'))
 plt.close()
 
 # =============== Plotting whole read lengths and segmentation distribution ===============
-lengths = [len(read) for read in signals[:, 0]]
+lengths = [len(read[0]) for read in signals]
 plt.hist(lengths)
 plt.title('Signal lengths distribution')
 plt.xlabel('Signal length')
