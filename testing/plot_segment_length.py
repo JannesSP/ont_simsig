@@ -3,8 +3,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import h5py
-from scipy import stats
-# from distfit import distfit
 
 f = '/home/yi98suv/projects/modbuster/data/epinano/nanopolish/nanopolish_segmentation_bases_2.hdf5'
 id_file = '/home/yi98suv/projects/modbuster/data/epinano/nanopolish/ids_nomod_rep1.ids'
@@ -15,14 +13,17 @@ h5 = h5py.File(f, 'r')
 
 ms = []
 md = []
+mins = []
 
 for id in ids:
     if id in h5:
         ms.append(np.mean(np.diff(h5[id][:, 0])))
         md.append(np.median(np.diff(h5[id][:, 0])))
+        mins.append(min(h5[id[:, 0]]))
 
 ms = np.array(ms)
 md = np.array(md)
+mins = np.array(mins)
 
 # ============================ MEANS ============================
 print('Plotting means')
@@ -102,6 +103,25 @@ plt.text(np.median(logmd), ymax, 'median: ' + str(np.median(logmd)))
 plt.legend()
 plt.tight_layout()
 plt.savefig('epinano_nomod_logmedian_segment_lengths_distribution.png')
+plt.close()
+
+# ============================ LOG MEDIANS ============================
+print('Plotting minimum segment lengths')
+# the bins should be of integer width, because poisson is an integer distribution
+plt.title(f'EpiNano unmodified minimum segment lengths distribution\nn={len(mins)}')
+plt.hist(mins, bins=60, label='minima', density=True)
+
+# x = np.arange(min(logmd), max(logmd) + 1)
+
+axes = plt.gca()
+ymin, ymax = axes.get_ylim()
+plt.vlines([np.mean(mins), np.median(mins)], ymin = ymin, ymax=ymax, color = 'red')
+plt.text(np.mean(mins), ymax, 'mean: ' + str(np.mean(mins)))
+plt.text(np.median(mins), ymax, 'median: ' + str(np.median(mins)))
+
+plt.legend()
+plt.tight_layout()
+plt.savefig('epinano_nomod_min_segment_lengths_distribution.png')
 plt.close()
 
 # ============================ DISTFIT ============================
