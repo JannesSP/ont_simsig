@@ -5,7 +5,7 @@ import numpy as np
 import h5py
 import os
 
-path = os.path.join(__file__, '..', 'data', 'read_segment_length_distribution_epinano')
+path = os.path.join(os.path.dirname(__file__), '..', 'data', 'read_segment_length_distribution_epinano')
 
 f = '/home/yi98suv/projects/modbuster/data/epinano/nanopolish/nanopolish_segmentation_bases_2.hdf5'
 id_file = '/home/yi98suv/projects/modbuster/data/epinano/nanopolish/ids_nomod_rep1.ids'
