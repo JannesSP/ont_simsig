@@ -13,14 +13,16 @@ df = pd.read_csv(kmer_model_file, sep='\t')
 # kmers are stored from 3' to 5'
 kmer_dict = {key : (mean, std) for key, mean, std in zip(df['kmer'], df['level_mean'], df['level_stdv'])}
 
-print('Simulate RNA reads')
 rna = RNASimulator(kmer_dict, length=2000, suffix='A'*50)
 reference = rna.getReference()
-num_of_signals = 8000
+num_of_signals = 4000
+
+print('Simulate RNA reads')
 # signals = rna.drawRefSignals(num_of_signals)
 signals = rna.drawReadSignals(num_of_signals, min_len=1000, max_len=2000)
+print(f'Simulated {rna.getNumSimReads()} reads')
 
-writer = RNAWriter(reference, path=os.path.join(os.path.dirname(__file__), '..', 'data','simulation'), dedicated_filename='test')
+writer = RNAWriter(reference, path=os.path.join(os.path.dirname(__file__), '..', 'data','simulation'))
 writer.writeReads(signals)
 
 if not os.path.exists('plots'):

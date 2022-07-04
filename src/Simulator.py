@@ -1,10 +1,9 @@
-from random import choices
 from typing import Iterable, Tuple
 import numpy as np
 
 class RNASimulator():
 
-    def __init__(self, kmer_model : dict, length : int = 2000, reference : str = None, alphabet : str = 'ACGT', prefix : str = '', suffix : str = '') -> None:
+    def __init__(self, kmer_model : dict, length : int = 2000, reference : str = None, alphabet : str = 'ACGT', checkNucl : bool = True, prefix : str = '', suffix : str = '') -> None:
         '''
         Parameters
         ----------
@@ -16,12 +15,23 @@ class RNASimulator():
             Explicitly set reference for simulation
         alphabet : str
             Set of nucleotides used for reference generation
+        checkNucl : bool
+            Check alphabet, prefix and suffix for ACGT
         prefix : str
             Nucleotide sequence added to 5' end
         suffix : str
             Nucleotide sequence added to 3' end
         '''
+        if checkNucl:
+            for nucl in alphabet:
+                assert nucl in 'ACGT', f'Nucleotide {nucl} not part of ACGT in alphabet'
+            for nucl in prefix:
+                assert nucl in 'ACGT', f'Nucleotide {nucl} not part of ACGT in prefix'
+            for nucl in suffix:
+                assert nucl in 'ACGT', f'Nucleotide {nucl} not part of ACGT in suffix'
+
         self.alphabet = alphabet
+        self.npAlphabet = np.array(list(alphabet))
         self.kmer_model = kmer_model
 
         # mean for exponential distribution
@@ -32,6 +42,7 @@ class RNASimulator():
         # special sequence that should always appear at 3' end of sequence like adapters, barcode, polyA
         self.suffix = suffix
         self.__generate(reference, length)
+        self.simulatedReads = 0
 
     def __generate(self, reference, length) -> None:
         '''
@@ -43,27 +54,28 @@ class RNASimulator():
             Length of randomly generated reference for simulation
         '''
 
+        print('Generating reference')
+
         if reference is None:
-            self.reference = self.prefix + ''.join(choices(self.alphabet, k=length)) + self.suffix
+            self.reference = self.prefix + ''.join(np.random.choice(self.npAlphabet, size = length)) + self.suffix
             self.length = len(self.prefix) + length + len(self.suffix)
         else:
             assert len(reference) > 4, f'Reference sequence too small ({len(reference)}), cannot initialize'
             self.reference = self.prefix + reference + self.suffix
             self.length = len(self.reference)
 
-        for nucl in self.reference:
-            assert nucl in self.alphabet, f'Reference contains a nucleotide ({nucl}) that is not in the alphabet ({self.alphabet})!'
-
     def __drawSegmentLength(self) -> int:
         '''
         Model to simulate the segment length in a RNA read
         '''
-        # TODO maybe add a small binomial or int(gaussian) distribution to reduce number of very small events
-        return np.random.exponential(self.exp_m, 1).astype(int).item()
+        return np.random.exponential(self.exp_m, 1).astype(int).item() + 5 # minimum segment length I saw in nanopolish segmentation was 5
 
     def __drawSegmentSignal(self, kmer : str, length : int) -> np.ndarray:
         assert len(kmer) == 5, f'Kmer must have length 5 not {len(kmer)}'
         return np.random.normal(self.kmer_model[kmer][0], self.kmer_model[kmer][1], length)
+
+    def getNumSimReads(self) -> int:
+        return self.simulatedReads
 
     def getRefLength(self) -> int:
         return self.length
@@ -101,6 +113,7 @@ class RNASimulator():
         assert min_len < max_len
         assert max_len < self.length
         assert min_len >= 5
+        self.simulatedReads += n
         return np.array([self.__drawSignal(stop = np.random.randint(min_len, max_len, size = 1, dtype = int).item()) for _ in range(n)])
 
     def drawReadSignal(self, max_len : int, min_len : int = 5) -> Tuple[np.ndarray, np.ndarray]:
@@ -121,6 +134,7 @@ class RNASimulator():
         borders : np.ndarray
             an array containing the segment borders starting with 0
         '''
+        self.simulatedReads += 1
         return self.__drawSignal(stop = np.random.randint(min_len, max_len, size = 1, dtype = int).item())
 
     def drawRefSignals(self, n : int) -> Iterable[Tuple[np.ndarray, np.ndarray]]:
@@ -139,12 +153,14 @@ class RNASimulator():
                 print(f'Simulating read {i + 1}\\{n} ...', end = '\r')
             sims.append(self.__drawSignal())
         print(f'Done simulating {n} reads  ')
+        self.simulatedReads += n
         return sims
 
     def drawRefSignal(self) -> Tuple[np.ndarray, np.ndarray]:
         '''
         Generates 1 read signal starting from 3' (RNA) end of the reference and stopping after a uniformly drawn number of bases
         '''
+        self.simulatedReads += 1
         return self.__drawSignal()
 
     def __drawSignal(self, stop : int = None) -> Tuple[np.ndarray, np.ndarray]:

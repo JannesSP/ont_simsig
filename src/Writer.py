@@ -32,13 +32,14 @@ class RNAWriter():
         self.batchsize = batchsize
         self.barcoded = barcoded
         self.date = datetime.now().strftime("%Y%m%d")
+        self.datetime_clean = datetime.now().strftime("%Y%m%d_%H%M%S")
         self.datetime = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
-        
+
         if dedicated_filename is not None:
             self.filename = join(path, dedicated_filename)
         else:
-            self.filename = join(path, f'RNA_simulation_{self.date}_batch')
-            
+            self.filename = join(path, f'RNA_simulation_{self.datetime_clean}_batch')
+
         if not exists(path):
             makedirs(path)
         
@@ -61,6 +62,9 @@ class RNAWriter():
     def __writeRefFasta(self) -> None:
         with open(f'{self.filename}_reference.fasta', 'w') as f:
             f.write(f'>{self.filename}\n{self.reference}\n')
+
+    def getFilename(self) -> str:
+        return self.filename
 
     def writeRead(self, simSignal : tuple[np.ndarray, np.ndarray]) -> None:
         '''
@@ -85,12 +89,12 @@ class RNAWriter():
         for num, (signal, borders) in enumerate(simSignals):
             
             if (num+1)%10==0:
-                print(f'Writing read {self.read_num + 1}\{len(simSignals)} ...', end = '\r')
+                print(f'Writing read {self.read_num + 1}\{len(simSignals)} in batch {self.batch} ...', end = '\r')
             
-            if (self.read_num + 1)%self.batchsize == 0:
+            if self.read_num%self.batchsize == 0 and self.read_num != 0:
                 self.h5.close()
                 self.batch += 1
-                self.h5 = h5py.File(f'RNA_simulation_{self.date}_batch{self.batch}.fast5', 'w')
+                self.h5 = h5py.File(f'{self.filename}{self.batch}.fast5', 'w')
                 self.h5.attrs.create("file_version", data=np.bytes_('2.2'))
                 self.h5.attrs.create("file_type", data=np.bytes_('multi-read'))
                 # EXTRA INFORMATION
@@ -173,7 +177,7 @@ class RNAWriter():
             self.start_time += len(signal)
             self.read_num += 1
         
-        print(f'Done writing {len(simSignals)} reads  ')
+        print(f'\nDone writing {len(simSignals)} reads')
             
     def close(self):
         '''
