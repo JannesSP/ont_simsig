@@ -16,11 +16,11 @@ kmer_dict = {key : (mean, std) for key, mean, std in zip(df['kmer'], df['level_m
 print('Simulate RNA reads')
 rna = RNASimulator(kmer_dict, length=2000, suffix='A'*50)
 reference = rna.getReference()
-num_of_signals = 12
+num_of_signals = 8000
 # signals = rna.drawRefSignals(num_of_signals)
 signals = rna.drawReadSignals(num_of_signals, min_len=1000, max_len=2000)
 
-writer = RNAWriter(reference, path=os.path.join('data','simulation'), dedicated_filename='test')
+writer = RNAWriter(reference, path=os.path.join(os.path.dirname(__file__), '..', 'data','simulation'), dedicated_filename='test')
 writer.writeReads(signals)
 
 if not os.path.exists('plots'):
