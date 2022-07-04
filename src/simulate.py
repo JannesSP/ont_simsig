@@ -25,9 +25,6 @@ path = os.path.join(os.path.dirname(__file__), '..', 'data','simulation')
 writer = RNAWriter(reference, path=path)
 writer.writeReads(signals)
 
-if not os.path.exists('plots'):
-    os.makedirs('plots')
-
 print('Plotting testdata')
 
 # =============== Plotting first 3 reads ===============
@@ -54,10 +51,10 @@ plt.close()
 
 # =============== Plotting whole read lengths and segmentation distribution ===============
 lengths = [len(read[0]) for read in signals]
-plt.hist(lengths)
+plt.hist(lengths, bins = 100)
 plt.title('Signal lengths distribution')
 plt.xlabel('Signal length')
 plt.ylabel('Frequency')
 plt.tight_layout()
-plt.savefig(os.path.join(path,'signal_lengths.png'))
+plt.savefig(os.path.join(writer.getFilename() + 'signal_lengths.png'))
 plt.close()
