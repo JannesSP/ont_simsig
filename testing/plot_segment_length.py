@@ -105,7 +105,7 @@ plt.tight_layout()
 plt.savefig('epinano_nomod_logmedian_segment_lengths_distribution.png')
 plt.close()
 
-# ============================ LOG MEDIANS ============================
+# ============================ MINIMUM ============================
 print('Plotting minimum segment lengths')
 # the bins should be of integer width, because poisson is an integer distribution
 plt.title(f'EpiNano unmodified minimum segment lengths distribution\nn={len(mins)}')
