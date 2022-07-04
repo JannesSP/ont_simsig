@@ -22,7 +22,7 @@ for id in ids:
     if id in h5:
         ms.append(np.mean(np.diff(h5[id][:, 0])))
         md.append(np.median(np.diff(h5[id][:, 0])))
-        mins.append(min(h5[id][:, 0]))
+        mins.append(np.diff(h5[id][:, 0]).min())
 
 ms = np.array(ms)
 md = np.array(md)
