@@ -18,8 +18,8 @@ reference = rna.getReference()
 num_of_signals = 4000
 
 print('Simulate RNA reads')
-signals = rna.drawRefSignals(num_of_signals)
-# signals = rna.drawReadSignals(num_of_signals, min_len=1000, max_len=2000)
+# signals = rna.drawRefSignals(num_of_signals)
+signals = rna.drawReadSignals(num_of_signals, min_len=1000, max_len=2000)
 
 path = os.path.join(os.path.dirname(__file__), '..', 'data','simulation')
 writer = RNAWriter(reference, path=path)
