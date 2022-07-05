@@ -118,6 +118,8 @@ class RNAWriter():
             raw.attrs.create('start_mux', data=0, dtype=np.uint8)
             raw.attrs.create('start_time', data=self.start_time, dtype=np.uint64)
             raw.create_dataset('Signal', data=np.ceil(signal * (8192/1119.071533203125) + 0), dtype=np.int16) # from sarscov2 kiel data 22195
+            # ATTENTION: only looked into 1 fast5 batch file, 8192 is always the same, the range of 1119.... could change, I just took one value from it
+            # offset is set to 0, it changes by small value of [-10, 10] as far as I saw in the data
             
             # EXTRA INFORMATION
             raw.attrs.create('num_segments', data=len(borders) - 1, dtype=np.uint64)
@@ -141,6 +143,7 @@ class RNAWriter():
             context_tags.attrs.create('sample_frequency', data=np.bytes_('3012'))
             context_tags.attrs.create('sequencing_kit', data=np.bytes_('sqk-rna002'))
             
+            # DATA from sarscov_kiel 22195 sample
             tracking_id = read.create_group('tracking_id')
             tracking_id.attrs.create('asic_id', data=np.bytes_('614860902'))
             tracking_id.attrs.create('asic_id_eeprom', data=np.bytes_('5532807'))
