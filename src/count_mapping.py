@@ -134,7 +134,8 @@ def plotMapping(x : np.ndarray, id : np.ndarray, cov : np.ndarray, d : np.ndarra
         plt.show()
     else:
         plt.savefig(os.path.join(path, 'basecall_identity.png'))
-        plt.close()
+        
+    plt.close()
 
 def main() -> None:
     args = parse()
