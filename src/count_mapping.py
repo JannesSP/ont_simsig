@@ -34,6 +34,7 @@ def countMapping(bam : str, ref_header : str, ref_sequence : str) -> list[dict]:
 
     # counts of bases per ref position, N == total number of bases mapped at this position
     bases = []
+    idx = 0
 
     samfile = pysam.AlignmentFile(bam, 'rb')
     for idx, pileupcolumn in enumerate(samfile.pileup(ref_header, 1, len(ref_sequence))):
@@ -66,10 +67,18 @@ def countMapping(bam : str, ref_header : str, ref_sequence : str) -> list[dict]:
                 bases[idx][base] += 1
                 bases[idx]['counts'] += 1
 
+    print(f'Found alignments for {idx} positions')
+
     # print(f'Got data for {idx}\{len(ref_sequence)} positions')
     return bases
 
 def plotMapping(x : np.ndarray, id : np.ndarray, cov : np.ndarray, d : np.ndarray, path : str = None) -> None:
+
+    sum = open(os.path.join(path, 'counts.csv'), 'w+')
+    sum.write('feature,mean,stdev,median,min,max\n')
+    sum.write(f'identity,{np.mean(id)},{np.median(id)},{np.min(id)},{np.max(id)}\n')
+    sum.write(f'coverage,{np.mean(cov)},{np.median(cov)},{np.min(cov)},{np.max(cov)}\n')
+    sum.write(f'deletions,{np.mean(d)},{np.median(d)},{np.min(d)},{np.max(d)}\n')
 
     assert len(x) == len(id)
 
@@ -124,7 +133,7 @@ def plotMapping(x : np.ndarray, id : np.ndarray, cov : np.ndarray, d : np.ndarra
 
     # identity histplot
 
-    sns.histplot(y = sortIds, kde=True, stat="density")
+    sns.histplot(x = sortIds, kde=True, stat="density", bins = 100)
     plt.xlabel('Identity')
     plt.ylabel('Density')
     plt.title('Identity distribution of simulated data')
@@ -134,7 +143,7 @@ def plotMapping(x : np.ndarray, id : np.ndarray, cov : np.ndarray, d : np.ndarra
         plt.show()
     else:
         plt.savefig(os.path.join(path, 'basecall_identity.png'))
-        
+
     plt.close()
 
 def main() -> None:
@@ -150,6 +159,9 @@ def main() -> None:
     cov = np.array([pos['N'] for pos in counts])
     x = np.array([pos['pos'] for pos in counts])
     d = np.array([pos['del']/pos['N'] for pos in counts])
+
+    assert len(x) > 0, f'No mapped reads found to plot'
+    
     plotMapping(x, id, cov, d, path = savedir)
 
 if __name__ == '__main__':
