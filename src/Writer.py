@@ -1,5 +1,5 @@
 from datetime import datetime
-from os.path import join, exists
+from os.path import join, exists, splitext, basename
 from os import makedirs
 from typing import Iterable
 
@@ -12,7 +12,7 @@ class RNAWriter():
     Class to write read signals into the multi FAST5 format
     '''
     
-    def __init__(self, reference : str, path : str = '.', dedicated_filename : str = None, barcoded : bool = False, batchsize : int = 4000):
+    def __init__(self, reference : str, path : str = '.', dedicated_filename : str = None, barcoded : bool = False, batchsize : int = 4000, tag : str = ''):
         '''
         Parameters
         ----------
@@ -35,7 +35,7 @@ class RNAWriter():
         self.datetime_clean = datetime.now().strftime("%Y%m%d_%H%M%S")
         self.datetime = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
 
-        path = join(path, f'RNA_simulation_{self.datetime_clean}')
+        path = join(path, f'RNA_simulation_{self.datetime_clean}', tag)
         if dedicated_filename is not None:
             self.filename = join(path, dedicated_filename)
         else:
@@ -61,8 +61,8 @@ class RNAWriter():
         self.sum.write('filename_fastq\tfilename_fast5\tread_id\trun_id\tchannel\tmux\tstart_time\tduration\tpore_type\texperiment_id\tsample_id\tend_reason\n')
 
     def __writeRefFasta(self) -> None:
-        with open(f'{self.filename}_reference.fasta', 'w') as f:
-            f.write(f'>{self.filename}\n{self.reference}\n')
+        with open(f'{splitext(self.filename)[0]}_reference.fasta', 'w') as f:
+            f.write(f'>{basename(self.filename)}\n{self.reference}\n')
 
     def getFilename(self) -> str:
         return self.filename
