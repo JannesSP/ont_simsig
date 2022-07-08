@@ -127,9 +127,5 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-data/simulation/test_reference.fasta
-data/simulation/test_sequencing_summary.txt
-data/simulation/test0.fast5
 plots/simulation.png
-data/simulation/sequencing_summary.txt
-data/simulation/sequencing_telemetry.js
+data/*

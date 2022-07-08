@@ -1,6 +1,7 @@
 import os
 import sys
 import pandas as pd
+import numpy as np
 sys.path.append("..")
 from ..src.Simulator import RNASimulator
 
@@ -45,3 +46,18 @@ def testReference():
     ref = 'CAGCTAGTCGACTAGCTA'
     rna = RNASimulator(kmer_dict, reference = ref)
     assert rna.getReference() == ref
+
+def testRefSignalSimulation():
+    ref = 'ACGTAA'[::-1]
+    dict = {'ACGTA' : (5,2), 'CGTAA':(-2,1)}
+    segment_length = 20
+
+    for scale in [.0, .2, .4, .6, .8, 1.0]:
+        seed = 10
+        np.random.seed(seed)
+        target_signal = np.append(np.random.normal(5, 2*scale, segment_length), np.random.normal(-2, 1*scale, segment_length))
+
+        rna = RNASimulator(dict, reference=ref, set_segment_length=20, stdev_scale=scale, seed=seed)
+        sim_signal, borders = rna.drawRefSignal()
+
+        assert np.all(target_signal == sim_signal), f'{scale}\n{target_signal}\n{sim_signal}'

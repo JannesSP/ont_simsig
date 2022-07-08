@@ -1,5 +1,5 @@
 from datetime import datetime
-from os.path import join, exists
+from os.path import join, exists, splitext, basename
 from os import makedirs
 from typing import Iterable
 
@@ -12,7 +12,7 @@ class RNAWriter():
     Class to write read signals into the multi FAST5 format
     '''
     
-    def __init__(self, reference : str, path : str = '.', dedicated_filename : str = None, barcoded : bool = False, batchsize : int = 4000):
+    def __init__(self, reference : str, path : str = '.', dedicated_filename : str = None, barcoded : bool = False, batchsize : int = 4000, tag : str = ''):
         '''
         Parameters
         ----------
@@ -32,13 +32,15 @@ class RNAWriter():
         self.batchsize = batchsize
         self.barcoded = barcoded
         self.date = datetime.now().strftime("%Y%m%d")
+        self.datetime_clean = datetime.now().strftime("%Y%m%d_%H%M%S")
         self.datetime = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
-        
+
+        path = join(path, f'RNA_simulation_{self.datetime_clean}', tag)
         if dedicated_filename is not None:
             self.filename = join(path, dedicated_filename)
         else:
-            self.filename = join(path, f'RNA_simulation_{self.date}_batch')
-            
+            self.filename = join(path, f'RNA_simulation_{self.datetime_clean}_batch')
+
         if not exists(path):
             makedirs(path)
         
@@ -59,8 +61,11 @@ class RNAWriter():
         self.sum.write('filename_fastq\tfilename_fast5\tread_id\trun_id\tchannel\tmux\tstart_time\tduration\tpore_type\texperiment_id\tsample_id\tend_reason\n')
 
     def __writeRefFasta(self) -> None:
-        with open(f'{self.filename}_reference.fasta', 'w') as f:
-            f.write(f'>{self.filename}\n{self.reference}\n')
+        with open(f'{splitext(self.filename)[0]}_reference.fasta', 'w') as f:
+            f.write(f'>{basename(self.filename)}\n{self.reference}\n')
+
+    def getFilename(self) -> str:
+        return self.filename
 
     def writeRead(self, simSignal : tuple[np.ndarray, np.ndarray]) -> None:
         '''
@@ -85,12 +90,12 @@ class RNAWriter():
         for num, (signal, borders) in enumerate(simSignals):
             
             if (num+1)%10==0:
-                print(f'Writing read {self.read_num + 1}\{len(simSignals)} ...', end = '\r')
+                print(f'Writing read {self.read_num + 1}\{len(simSignals)} in batch {self.batch} ...', end = '\r')
             
-            if (self.read_num + 1)%self.batchsize == 0:
+            if self.read_num%self.batchsize == 0 and self.read_num != 0:
                 self.h5.close()
                 self.batch += 1
-                self.h5 = h5py.File(f'RNA_simulation_{self.date}_batch{self.batch}.fast5', 'w')
+                self.h5 = h5py.File(f'{self.filename}{self.batch}.fast5', 'w')
                 self.h5.attrs.create("file_version", data=np.bytes_('2.2'))
                 self.h5.attrs.create("file_type", data=np.bytes_('multi-read'))
                 # EXTRA INFORMATION
@@ -113,6 +118,8 @@ class RNAWriter():
             raw.attrs.create('start_mux', data=0, dtype=np.uint8)
             raw.attrs.create('start_time', data=self.start_time, dtype=np.uint64)
             raw.create_dataset('Signal', data=np.ceil(signal * (8192/1119.071533203125) + 0), dtype=np.int16) # from sarscov2 kiel data 22195
+            # ATTENTION: only looked into 1 fast5 batch file, 8192 is always the same, the range of 1119.... could change, I just took one value from it
+            # offset is set to 0, it changes by small value of [-10, 10] as far as I saw in the data
             
             # EXTRA INFORMATION
             raw.attrs.create('num_segments', data=len(borders) - 1, dtype=np.uint64)
@@ -136,6 +143,7 @@ class RNAWriter():
             context_tags.attrs.create('sample_frequency', data=np.bytes_('3012'))
             context_tags.attrs.create('sequencing_kit', data=np.bytes_('sqk-rna002'))
             
+            # DATA from sarscov_kiel 22195 sample
             tracking_id = read.create_group('tracking_id')
             tracking_id.attrs.create('asic_id', data=np.bytes_('614860902'))
             tracking_id.attrs.create('asic_id_eeprom', data=np.bytes_('5532807'))
@@ -173,7 +181,7 @@ class RNAWriter():
             self.start_time += len(signal)
             self.read_num += 1
         
-        print(f'Done writing {len(simSignals)} reads  ')
+        print(f'\nDone writing {len(simSignals)} reads')
             
     def close(self):
         '''
