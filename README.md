@@ -16,3 +16,20 @@ Renaming fastqs
 ---
 
     for dir in data/RNA*; do /home/yi98suv/anaconda3/envs/pysam/bin/python /home/yi98suv/projects/squigseg/src/count_mapping.py $dir/basecalls/fastq.bam $dir/simulation/$(basename $dir)_batch_reference.fasta; done
+
+The first three simulations using the set_segment_length of 50 and stdev_scale of 0, 0.2 and 0.4 did not work!
+Guppy was able to basecall, but minimap2 was not able to map these reads - probably too many errors?
+
+## running nanopolish eventalign on simulated the data
+
+    for dir in data/RNA*; do nanopolish index -d $dir/simulation -s $dir/basecalls/sequencing_summary.txt $dir/basecalls/*fastq; done
+
+    for dir in data/RNA*; do mkdir $dir/nanopolish; done
+
+    for dir in data/RNA*; do nanopolish eventalign --reads $dir/basecalls/*fastq --bam $dir/basecalls/fastq.bam --genome $dir/simulation/*_reference.fasta --summary=$dir/nanopolish/eventalign_summary.csv --scale-events --signal-index -t 24 --progress > $dir/nanopolish/eventalign_result.csv; done
+
+## extract nanopolish segmentation
+
+    for dir in data/RNA*; do python src/extract_raw_nanopolish_seg.py $dir/nanopolish/eventalign_summary.csv $dir/nanopolish/eventalign_result.csv $dir/nanopolish/segmentation.hdf5; done
+
+## 
