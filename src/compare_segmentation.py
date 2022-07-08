@@ -1,9 +1,13 @@
-import h5py
+import os
 from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser, Namespace
-from Bio import SeqIO
+
+import h5py
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
+from Bio import SeqIO
+
 
 def parse() -> Namespace:
 
@@ -17,11 +21,12 @@ def parse() -> Namespace:
 
     return parser.parse_args()
 
-def compare(sim5 : h5py.File, nano5 : h5py.File, fastqs : dict):
+def compare(sim5 : h5py.File, nano5 : h5py.File, fastqs : dict) -> pd.DataFrame:
     
     # store key features for each read describing the segmentation and basecalling quality
-    # TODO change to pandas dataframe for plotting
-    segmentation_quality = {}
+    df = pd.DataFrame(
+        columns=['type', 'segment_mean', 'segment_stdev', 'segmentation', 'mean_error', 'stdev_error', 'max_error', 'min_error'],
+        dtype=['str', 'float','float','float','float','float','float','float'])
 
     for readid in nano5:
 
@@ -33,23 +38,58 @@ def compare(sim5 : h5py.File, nano5 : h5py.File, fastqs : dict):
         nSimSegments = sim5[read]['Raw'].attrs['num_segments'] # ~ #bases: #bases = #segments + 4, #segments = #5mers
         signal = sim5[read]['Raw/Signal'][:]
         assert (nSimSegments + 1) == len(simBorders)
-
+        e = getSegmentErrors(nanoBorders, simBorders)
         read : str = str(fastqs[readid].seq)
         # phred : list[int] = fastqs[readid].letter_annotations['phred_quality']
 
-        segmentation_quality[readid]['target_mean'] = np.mean([np.mean(signal[simBorders[i]:simBorders[i+1]]) for i in range(nSimSegments)])
-        # intrasegmental standard deviation
-        segmentation_quality[readid]['target_stdev'] = np.mean([np.std(signal[simBorders[i]:simBorders[i+1]]) for i in range(nSimSegments)])
+        sim_entry = pd.DataFrame({
+            'type':['simulation'],
+            'segment_mean':[np.mean([np.mean(signal[simBorders[i]:simBorders[i+1]]) for i in range(nSimSegments)])],
+            'segment_stdev':[np.mean([np.std(signal[simBorders[i]:simBorders[i+1]]) for i in range(nSimSegments)])],
+            'segmentation':[len(read)/nSimSegments],
+            'mean_error':[np.nan],
+            'stdev_error':[np.nan],
+            'max_error':[np.nan],
+            'min_error':[np.nan]
+        })
 
-        segmentation_quality[readid]['nano_mean'] = np.mean([np.mean(signal[nanoBorders[i]:nanoBorders[i+1]]) for i in range(len(nanoBorders) - 1)])
-        segmentation_quality[readid]['nano_stdev'] = np.mean([np.std(signal[nanoBorders[i]:nanoBorders[i+1]]) for i in range(len(nanoBorders) - 1)])
+        nano_entry = pd.DataFrame({
+            'type':['nanopolish'],
+            'segment_mean':[np.mean([np.mean(signal[nanoBorders[i]:nanoBorders[i+1]]) for i in range(len(nanoBorders) - 1)])],
+            'segment_stdev':[np.mean([np.std(signal[nanoBorders[i]:nanoBorders[i+1]]) for i in range(len(nanoBorders) - 1)])],
+            'segmentation':[len(read)/(len(simBorders) - 1)],
+            'mean_error':[np.mean(e)],
+            'stdev_error':[np.std(e)],
+            'max_error':[np.max(e)],
+            'min_error':[np.min(e)]
+        })
+        
+        df = df.append([df, sim_entry, nano_entry], ignore_index=True)
+        
+    return df
 
-        segmentation_quality[readid]['target_fraction'] = len(read)/nSimSegments
-        segmentation_quality[readid]['nano_fraction'] = len(read)/(len(simBorders) - 1)
-
-        segmentation_quality[readid]['nano_error'] = getSegmentError(nanoBorders, simBorders)
-
-def getSegmentError(nanoBorders : np.ndarray, simBorders : np.ndarray) -> float:
+def plot(df : pd.DataFrame, path : str) -> None:
+    '''
+    Plot segmentation quality
+    '''
+    sns.set(style='whitegrid')
+    sns.lmplot(x='segment_stdev', y='mean_error', data=df.loc[df['type'] == 'nanopolish'])
+    plt.savefig(os.path.join(path, 'nano_std_error.png'))
+    plt.close()
+    
+    sns.jointplot(data = df, x = 'segment_mean', y = 'segment_stdev', hue = 'type')
+    plt.savefig(os.path.join(path, 'segment_distritbuions.png'))
+    plt.close()
+    
+    sns.jointplot(data = df.loc[df['type'] == 'nanopolish'], x = 'mean_error', y = 'stdev_error')
+    plt.savefig(os.path.join(path, 'nano_error.png'))
+    plt.close()
+    
+    sns.histplot(data = df, x = 'segmentation', hue = 'type')
+    plt.savefig(os.path.join(path, 'segmentation.png'))
+    plt.close()
+    
+def getSegmentErrors(nanoBorders : np.ndarray, simBorders : np.ndarray) -> list:
     '''
     Return mean segmentation error
 
@@ -58,15 +98,21 @@ def getSegmentError(nanoBorders : np.ndarray, simBorders : np.ndarray) -> float:
     nanoBorders : sorted np.ndarray
     simBorders : sorted np.ndarray
     '''
-    error = []
+    errors = []
     simIdx = 0
 
     for border in nanoBorders:
         while(border <= simBorders[simIdx]):
             simIdx += 1
-        error.append(np.abs(border - simBorders[simIdx - 1]))
+            
+        ld = border - simBorders[simIdx - 1]
+        rd = simBorders[simIdx] - border
+        if ld <= rd:
+            errors.append(ld)
+        else:
+            errors.append(rd)
 
-    return np.mean(error)
+    return errors
 
 def readFastq(fq : str) -> dict:
     return SeqIO.to_dict(SeqIO.parse(open(fq),'fastq'))
@@ -77,7 +123,7 @@ def main() -> None:
     nano5 = h5py.File(args.nanopolish_segmentation_fast5, 'r')
     fq_dict = readFastq(args.fastq)
 
-    compare(sim5, nano5, fq_dict)
+    df = compare(sim5, nano5, fq_dict)
 
 if __name__ == '__main__':
     main()
