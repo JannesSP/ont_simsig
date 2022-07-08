@@ -89,6 +89,8 @@ def plot(df : pd.DataFrame, path : str) -> None:
     plt.savefig(os.path.join(path, 'segmentation.png'))
     plt.close()
     
+    
+# TODO maybe change this to some kind of mapping, use bases/basecalling as index for segments
 def getSegmentErrors(nanoBorders : np.ndarray, simBorders : np.ndarray) -> list:
     '''
     Return mean segmentation error
