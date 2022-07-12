@@ -104,11 +104,11 @@ def getSegmentErrors(nanoBorders : np.ndarray, simBorders : np.ndarray) -> list:
     simIdx = 0
 
     for border in nanoBorders:
-        while(border <= simBorders[simIdx]):
+        while(border >= simBorders[simIdx]):
             simIdx += 1
             
         ld = border - simBorders[simIdx - 1]
-        rd = simBorders[simIdx] - border
+        rd = abs(simBorders[simIdx] - border)
         if ld <= rd:
             errors.append(ld)
         else:
