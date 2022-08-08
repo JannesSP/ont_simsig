@@ -12,7 +12,7 @@ class RNAWriter():
     Class to write read signals into the multi FAST5 format
     '''
     
-    def __init__(self, reference : str, path : str = '.', dedicated_filename : str = None, barcoded : bool = False, batchsize : int = 4000, tag : str = ''):
+    def __init__(self, reference : str, path : str = '.', dedicated_filename : str = None, barcoded : bool = False, batchsize : int = 4000, tag : str = '', header : str = None):
         '''
         Parameters
         ----------
@@ -28,6 +28,7 @@ class RNAWriter():
         self.batch = 0
         self.read_num = 0
         self.start_time = 0
+        self.header = header
         self.reference = reference
         self.batchsize = batchsize
         self.barcoded = barcoded
@@ -62,7 +63,10 @@ class RNAWriter():
 
     def __writeRefFasta(self) -> None:
         with open(f'{splitext(self.filename)[0]}_reference.fasta', 'w') as f:
-            f.write(f'>{basename(self.filename)}\n{self.reference}\n')
+            if self.header is not None:
+                f.write(f'>{self.header}\n{self.reference}\n')
+            else:
+                f.write(f'>{basename(self.filename)}\n{self.reference}\n')
 
     def getFilename(self) -> str:
         return self.filename
