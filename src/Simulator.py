@@ -131,10 +131,13 @@ class RNASimulator():
 
         Returns
         -------
-        sim_signals : np.ndarray
-            a numpy array representing the simulated signal according the given kmer_model
-        borders : np.ndarray
-            an array containing the segment borders starting with 0
+        signals : np.ndarray
+            as [(signal, segments), ...]
+            
+            signal : np.ndarray
+                a numpy array representing the simulated signal according the given kmer_model
+            borders : np.ndarray
+                an array containing the segment borders starting with 0
         '''
         assert n > 0
         assert min_len < max_len
@@ -172,6 +175,16 @@ class RNASimulator():
         ----------
         n : int
             number of generated signals
+
+        Returns
+        -------
+        signals : np.ndarray
+            as [(signal, segments), ...]
+            
+            signal : np.ndarray
+                a numpy array representing the simulated signal according the given kmer_model
+            borders : np.ndarray
+                an array containing the segment borders starting with 0
         '''
         assert n > 0
         sims = []
