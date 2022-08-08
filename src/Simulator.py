@@ -140,6 +140,7 @@ class RNASimulator():
                 an array containing the segment borders starting with 0
         '''
         assert n > 0
+        assert min_len is not None
         assert min_len < max_len
         assert max_len < self.length
         assert min_len >= 5
