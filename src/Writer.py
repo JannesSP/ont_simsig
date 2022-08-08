@@ -1,7 +1,7 @@
 from datetime import datetime
 from os.path import join, exists, splitext, basename
 from os import makedirs
-from typing import Iterable
+from typing import Iterable, Tuple
 
 import h5py
 import numpy as np
@@ -71,7 +71,7 @@ class RNAWriter():
     def getFilename(self) -> str:
         return self.filename
 
-    def writeRead(self, simSignal : tuple[np.ndarray, np.ndarray]) -> None:
+    def writeRead(self, simSignal : Tuple[np.ndarray, np.ndarray]) -> None:
         '''
         Write one signal to the FAST5 file
         Parameters
@@ -82,7 +82,7 @@ class RNAWriter():
         '''
         self.writeReads([simSignal])
     
-    def writeReads(self, simSignals : Iterable[tuple[np.ndarray, np.ndarray]]) -> None:
+    def writeReads(self, simSignals : Iterable[Tuple[np.ndarray, np.ndarray]]) -> None:
         '''
         Write multiple signals to the FAST5 file
         Parameters
