@@ -10,14 +10,14 @@ def parse() -> Namespace:
 
     parser = ArgumentParser(formatter_class=ArgumentDefaultsHelpFormatter) 
     
-    parser.add_argument('num_of_reads', type = int, help='Number of reads to simulatre', required = True)
-    parser.add_argument('outdir', type = str, help='Output directory to store files', required=True)
+    parser.add_argument('num_of_reads', type = int, help='Number of reads to simulate')
+    parser.add_argument('outdir', type = str, help='Output directory to store files')
     
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument('-r', '--reference', default = None, type = str, help = 'Reference fasta file, currently only supporting a single reference')
     group.add_argument('-rl', '--reflen', default = None, type = int, help = 'Randomly generated reference length')
 
-    parser.add_argument('--fullRef', type = bool, action = 'store_true', help = 'Always draw full reference reads')
+    parser.add_argument('--fullRef', default = False, action = 'store_true', help = 'Always draw full reference reads')
     parser.add_argument('--min_len', default = None, type = int, help = 'Minimum length of drawn reads')
     parser.add_argument('--max_len', default = None, type = int, help = 'Maximum length of drawn reads')
     parser.add_argument('--suffix', default = 'A'*50, help = 'Suffix sequence will be added to reference 3\' end')
@@ -56,9 +56,9 @@ def buildSimulator(model : dict, reference : str, reflen : int, suffix : str, se
 
     if reference is not None:
         header, reference = readFasta(reference)
-        rna = RNASimulator(readModel(model), reference=reference, suffix=suffix, seed=seed, stdev_scale=stdev_scale, set_segment_length=segment_length)
+        rna = RNASimulator(model, reference=reference, suffix=suffix, seed=seed, stdev_scale=stdev_scale, set_segment_length=segment_length)
     else:
-        rna = RNASimulator(readModel(model), length=reflen, suffix=suffix, seed=seed, stdev_scale=stdev_scale, set_segment_length=segment_length)
+        rna = RNASimulator(model, length=reflen, suffix=suffix, seed=seed, stdev_scale=stdev_scale, set_segment_length=segment_length)
         reference = rna.getReference()
         header = None
 
@@ -106,7 +106,7 @@ def main() -> None:
     fullRef : bool = args.fullRef
     stdev_scale : float = args.stdev_scale
     seed : int = args.seed
-    segment_length : int = args.segment_lenth
+    segment_length : int = args.segment_length
 
     print('Building reference ...')
     header, reference, rnasimulator = buildSimulator(readModel(model), reference, reflen, suffix, seed, stdev_scale, segment_length)

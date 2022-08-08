@@ -33,6 +33,6 @@ Guppy was able to basecall, but minimap2 was not able to map these reads - proba
 
 # ont_simsig.py
 
-Simulate 1000 reads of a random reference
+Simulate 1 read of a random reference with 2000 bases
 
-    python src/ont_simsig.py 1000 data/simulation/
+    python src/ont_simsig.py 1 -rl 2000 data/simulation/ --fullRef
