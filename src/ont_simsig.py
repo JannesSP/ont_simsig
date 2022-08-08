@@ -60,7 +60,7 @@ def buildSimulator(model : dict, reference : str, reflen : int, suffix : str, se
     else:
         rna = RNASimulator(readModel(model), length=reflen, suffix=suffix, seed=seed, stdev_scale=stdev_scale, set_segment_length=segment_length)
         reference = rna.getReference()
-        header = 'Generated_reference'
+        header = None
 
     return header, reference, rna
 
@@ -81,12 +81,12 @@ def simulateReads(rnasimulator : RNASimulator, num_of_reads : int, fullRef : boo
     else:
         return rnasimulator.drawReadSignals(num_of_reads, min_len=min_len, max_len=max_len)
 
-def writeSignals(path : str, reference : str, signals) -> None:
+def writeSignals(path : str, header : str, reference : str, signals) -> None:
     
     if not os.path.exists(path):
         os.makedirs(path)
 
-    writer = RNAWriter(reference, path=path, tag = 'simulation')
+    writer = RNAWriter(reference, path=path, tag = 'simulation', header = header)
     writer.writeReads(signals)
 
 def main() -> None:
@@ -115,7 +115,7 @@ def main() -> None:
     signals = simulateReads(rnasimulator, num_of_reads, fullRef, min_len, max_len)
 
     print('Writing data ...')
-    writeSignals(outdir, reference, signals)
+    writeSignals(outdir, header, reference, signals)
 
     print('Done')
 
