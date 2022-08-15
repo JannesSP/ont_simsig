@@ -1,3 +1,8 @@
+# author: Jannes Spangenberg
+# e-mail: jannes.spangenberg@uni-jena.de
+# github: https://github.com/JannesSP
+# website: https://jannessp.github.io
+
 from datetime import datetime
 from os.path import join, exists, splitext, basename
 from os import makedirs
