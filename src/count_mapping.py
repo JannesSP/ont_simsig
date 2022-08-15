@@ -3,6 +3,7 @@
 # github: https://github.com/JannesSP
 # website: https://jannessp.github.io
 
+from typing import List, Tuple
 import pysam
 from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser, Namespace
 from Bio import SeqIO
@@ -22,7 +23,7 @@ def parse() -> Namespace:
 
     return parser.parse_args()
 
-def readFasta(fasta : str) -> tuple[str, str]:
+def readFasta(fasta : str) -> Tuple[str, str]:
     '''
     Reads only first fasta sequence in the .FASTA file
 
@@ -35,7 +36,7 @@ def readFasta(fasta : str) -> tuple[str, str]:
     print(f'Reading fasta:\n{fasta_sequences.id}\n{str(fasta_sequences.seq[:100])}...')
     return fasta_sequences.id, str(fasta_sequences.seq)
 
-def countMapping(bam : str, ref_header : str, ref_sequence : str) -> list[dict]:
+def countMapping(bam : str, ref_header : str, ref_sequence : str) -> List[dict]:
 
     # counts of bases per ref position, N == total number of bases mapped at this position
     bases = []
