@@ -32,7 +32,7 @@ def parse() -> Namespace:
     parser.add_argument('--seed', default = None, type = int, help = 'Seed for the random generator')
     parser.add_argument('--segment_length', default = None, type = int, help = 'Set segment length for each kmer')
     parser.add_argument('--min_segment_length', default = 5, type = int, help = 'Minimum segment length')
-    parser.add_argument('--max_segment_length', default = Inf, type = float, help = 'Maximum segment length')
+    parser.add_argument('--max_segment_length', default = Inf, type = int, help = 'Maximum segment length')
 
     return parser.parse_args()
 
@@ -64,9 +64,9 @@ def buildSimulator(model : dict, reference : str, reflen : int, suffix : str, se
 
     if reference is not None:
         header, reference = readFasta(reference)
-        rna = RNASimulator(model, reference=reference, suffix=suffix, seed=seed, stdev_scale=stdev_scale, set_segment_length=segment_length, minL = minL, maxL = maxL)
+        rna = RNASimulator(model, reference=reference, suffix=suffix, seed=seed, stdev_scale=stdev_scale, set_segment_length=segment_length, shiftL = minL, maxL = maxL)
     else:
-        rna = RNASimulator(model, length=reflen, suffix=suffix, seed=seed, stdev_scale=stdev_scale, set_segment_length=segment_length, minL = minL, maxL = maxL)
+        rna = RNASimulator(model, length=reflen, suffix=suffix, seed=seed, stdev_scale=stdev_scale, set_segment_length=segment_length, shiftL = minL, maxL = maxL)
         reference = rna.getReference()
         header = None
 
