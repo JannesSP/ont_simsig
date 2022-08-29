@@ -1,6 +1,7 @@
 import os
 from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser, Namespace
 
+from dtaidistance import dtw
 import h5py
 import matplotlib.pyplot as plt
 import numpy as np
@@ -54,7 +55,7 @@ def compare(sim5 : h5py.File, nano5 : h5py.File, fastqs : dict) -> tuple[pd.Data
 
         if readid in nano5:
             nanoBorders = nano5[readid][:, 0]
-            e = getSegmentErrors(nanoBorders, simBorders)
+            e = getSimpleSegmentErrors(nanoBorders, simBorders)
         # Nanopolish has no segmentation for this read
         # maybe read could not be mapped with minimap2
         else:
@@ -170,7 +171,7 @@ def plot(read_df : pd.DataFrame, segment_df : pd.DataFrame, path : str) -> None:
     plt.close()
 
 # TODO maybe change this to some kind of mapping, use bases/basecalling as index for segments
-def getSegmentErrors(nanoBorders : np.ndarray, simBorders : np.ndarray) -> list:
+def getSimpleSegmentErrors(nanoBorders : np.ndarray, simBorders : np.ndarray) -> list:
     '''
     Return mean segmentation error
 
@@ -195,6 +196,9 @@ def getSegmentErrors(nanoBorders : np.ndarray, simBorders : np.ndarray) -> list:
             errors.append(rd)
 
     return errors
+
+def getSegmentDistance(nanoBorders : np.ndarray, simBorders : np.ndarray) -> float:
+    return dtw.distance_fast(nanoBorders, simBorders, use_pruning=True)
 
 def readFastq(fq : str) -> dict:
     return SeqIO.to_dict(SeqIO.parse(open(fq),'fastq'))
