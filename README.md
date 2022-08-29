@@ -1,11 +1,10 @@
-# squigseg
-First steps of creating a better resquiggling algorithm than the existing ones
+Simulate simple Oxford Nanopore Technologies RNA sequencing signals
 
 ## Basecall simulated data
 
     for dir in data/RNA_simulation_*/simulation; do ~/bin/ont-guppy/bin/guppy_basecaller -i $dir -s $(basename $dir)/basecalls/ --disable_pings --device cuda:0 --disable_qscore_filtering --calib_detect -c ~/bin/ont-guppy/data/rna_r9.4.1_70bps_hac.cfg; done
 
-Renaming fastqs
+Renaming fastqs if needed
 
     for file in data/*/basecalls/*fastq.temp; do mv $file ${file%%.temp}; done
 
@@ -15,7 +14,7 @@ Renaming fastqs
 
 ---
 
-    for dir in data/RNA*; do /home/yi98suv/anaconda3/envs/pysam/bin/python /home/yi98suv/projects/squigseg/src/count_mapping.py $dir/basecalls/fastq.bam $dir/simulation/$(basename $dir)_batch_reference.fasta; done
+    for dir in data/RNA*; do ~/anaconda3/envs/pysam/bin/python ~/projects/squigseg/src/count_mapping.py $dir/basecalls/fastq.bam $dir/simulation/$(basename $dir)_batch_reference.fasta; done
 
 The first three simulations using the set_segment_length of 50 and stdev_scale of 0, 0.2 and 0.4 did not work!
 Guppy was able to basecall, but minimap2 was not able to map these reads - probably too many errors?
@@ -32,4 +31,8 @@ Guppy was able to basecall, but minimap2 was not able to map these reads - proba
 
     for dir in data/RNA*; do python src/extract_raw_nanopolish_seg.py $dir/nanopolish/eventalign_summary.csv $dir/nanopolish/eventalign_result.csv $dir/nanopolish/segmentation.hdf5; done
 
-## 
+# ont_simsig.py
+
+Simulate 1 read of a random reference with 2000 bases
+
+    python src/ont_simsig.py 1 -rl 2000 data/simulation/ --fullRef

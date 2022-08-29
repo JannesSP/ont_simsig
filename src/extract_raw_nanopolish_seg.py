@@ -1,6 +1,7 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-# SK
+# author: Jannes Spangenberg
+# e-mail: jannes.spangenberg@uni-jena.de
+# github: https://github.com/JannesSP
+# website: https://jannessp.github.io
 
 from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser
 import sys

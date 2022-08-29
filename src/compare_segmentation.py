@@ -1,5 +1,11 @@
+# author: Jannes Spangenberg
+# e-mail: jannes.spangenberg@uni-jena.de
+# github: https://github.com/JannesSP
+# website: https://jannessp.github.io
+
 import os
 from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser, Namespace
+from typing import Tuple
 
 from dtaidistance import dtw
 import h5py
@@ -8,6 +14,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 from Bio import SeqIO
+
 
 
 def parse() -> Namespace:
@@ -23,7 +30,7 @@ def parse() -> Namespace:
 
     return parser.parse_args()
 
-def compare(sim5 : h5py.File, nano5 : h5py.File, fastqs : dict) -> tuple[pd.DataFrame, pd.DataFrame]:
+def compare(sim5 : h5py.File, nano5 : h5py.File, fastqs : dict) -> Tuple[pd.DataFrame, pd.DataFrame]:
     
     # store key features for each read describing the segmentation and basecalling quality
     read_statistics = pd.DataFrame(columns=['segmentation type', 'read', 'data Available', 'read segments mean', 'read segments stdev', 'basecall segmentation ratio', 'mean error', 'stdev error', 'max error', 'min error'])
