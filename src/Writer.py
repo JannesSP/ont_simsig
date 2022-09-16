@@ -60,7 +60,7 @@ class RNAWriter():
         self.h5.attrs.create('file_type', data=np.bytes_('multi-read'))
         # EXTRA INFORMATION
         self.h5.attrs.create('num_nucleotides', data=len(self.reference), dtype=np.uint16)
-        self.h5.create_dataset('Reference', data=np.string_(self.reference))
+        self.h5.attrs.create('Reference', data=np.string_(self.reference))
         
     def __initSum(self) -> None:
         self.sum = open(f'{self.filename}_sequencing_summary.txt', 'w')
