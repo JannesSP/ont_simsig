@@ -111,10 +111,11 @@ class RNAWriter():
                 self.h5.attrs.create('num_nucleotides', data=len(self.reference), dtype=np.uint16)
                 self.h5.attrs.create("Reference", data=np.string_(self.reference))
             
-            readid = 'read_' + str(self.read_num)
+            readid = 'sim-' + str(self.read_num)
+            fast5_id = 'read_' + readid
             channel_number = str(np.random.randint(1, 513))
 
-            read = self.h5.create_group(readid)
+            read = self.h5.create_group(fast5_id)
             read.attrs.create('pore_type', data=np.bytes_('not_set'))
             read.attrs.create('run_id', data=np.bytes_('rna_simulation'))
             
@@ -122,7 +123,7 @@ class RNAWriter():
             raw.attrs.create('duration', data=len(signal), dtype=np.uint32)
             raw.attrs.create('end_reason', data=5, dtype=np.uint8)
             raw.attrs.create('median_before', data=np.random.normal(217.59, 22.53), dtype=np.float64) # approximated from some real data
-            raw.attrs.create('read_id', data=np.bytes_(self.read_num))
+            raw.attrs.create('read_id', data=np.bytes_(readid))
             raw.attrs.create('read_number', data=self.read_num, dtype=np.int32)
             raw.attrs.create('start_mux', data=0, dtype=np.uint8)
             raw.attrs.create('start_time', data=self.start_time, dtype=np.uint64)
@@ -185,7 +186,7 @@ class RNAWriter():
             tracking_id.attrs.create('usb_config', data=np.bytes_('MinION_fx3_1.1.1_ONT#MinION_fpga_1.1.0#bulk#Auto'))
             tracking_id.attrs.create('version', data=np.bytes_('4.1.2'))
             
-            self.sum.write(f'-\t{self.filename}{self.batch}.fast5\t{self.read_num}\t{self.date}_simulation_run_id\t{channel_number}\t0\t{self.start_time}\t{len(signal)}\tnot_set\t{self.date}_simulation_run_id\t{self.date}_simulation_sample_id\tsignal_positive\n')
+            self.sum.write(f'-\t{self.filename}{self.batch}.fast5\t{readid}\t{self.date}_simulation_run_id\t{channel_number}\t0\t{self.start_time}\t{len(signal)}\tnot_set\t{self.date}_simulation_run_id\t{self.date}_simulation_sample_id\tsignal_positive\n')
             
             self.start_time += len(signal)
             self.read_num += 1
