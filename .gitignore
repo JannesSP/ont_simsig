@@ -129,3 +129,4 @@ dmypy.json
 .pyre/
 plots/simulation.png
 data/*
+testing/plot_segment_length.py
