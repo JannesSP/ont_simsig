@@ -7,6 +7,7 @@ from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser, Namespace
 import os
 import pandas as pd
 from Bio import SeqIO
+from numpy import Inf
 
 from Simulator import RNASimulator
 from Writer import RNAWriter
@@ -30,6 +31,8 @@ def parse() -> Namespace:
     parser.add_argument('--stdev_scale', type = float, default = 1.0, help = 'Scale to use for each models standard deviation.')
     parser.add_argument('--seed', default = None, type = int, help = 'Seed for the random generator')
     parser.add_argument('--segment_length', default = None, type = int, help = 'Set segment length for each kmer')
+    parser.add_argument('--min_segment_length', default = 5, type = int, help = 'Minimum segment length')
+    parser.add_argument('--max_segment_length', default = Inf, type = int, help = 'Maximum segment length')
 
     return parser.parse_args()
 
@@ -57,13 +60,13 @@ def readFasta(fa : str) -> tuple:
     reference = list(fastas.keys())[1]
     return header, reference
 
-def buildSimulator(model : dict, reference : str, reflen : int, suffix : str, seed : int, stdev_scale : float, segment_length : int) -> tuple:
+def buildSimulator(model : dict, reference : str, reflen : int, suffix : str, seed : int, stdev_scale : float, segment_length : int, minL : int, maxL : float) -> tuple:
 
     if reference is not None:
         header, reference = readFasta(reference)
-        rna = RNASimulator(model, reference=reference, suffix=suffix, seed=seed, stdev_scale=stdev_scale, set_segment_length=segment_length)
+        rna = RNASimulator(model, reference=reference, suffix=suffix, seed=seed, stdev_scale=stdev_scale, set_segment_length=segment_length, shiftL = minL, maxL = maxL)
     else:
-        rna = RNASimulator(model, length=reflen, suffix=suffix, seed=seed, stdev_scale=stdev_scale, set_segment_length=segment_length)
+        rna = RNASimulator(model, length=reflen, suffix=suffix, seed=seed, stdev_scale=stdev_scale, set_segment_length=segment_length, shiftL = minL, maxL = maxL)
         reference = rna.getReference()
         header = None
 
@@ -112,9 +115,11 @@ def main() -> None:
     stdev_scale : float = args.stdev_scale
     seed : int = args.seed
     segment_length : int = args.segment_length
+    minL : int = args.min_segment_length
+    maxL : float = args.max_segment_length
 
     print('Building reference ...')
-    header, reference, rnasimulator = buildSimulator(readModel(model), reference, reflen, suffix, seed, stdev_scale, segment_length)
+    header, reference, rnasimulator = buildSimulator(readModel(model), reference, reflen, suffix, seed, stdev_scale, segment_length, minL, maxL)
 
     print('Simulating reads ...')
     signals = simulateReads(rnasimulator, num_of_reads, fullRef, min_len, max_len)

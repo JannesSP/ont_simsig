@@ -8,7 +8,7 @@ import numpy as np
 
 class RNASimulator():
 
-    def __init__(self, kmer_model : dict, length : int = 2000, reference : str = None, alphabet : str = 'ACGT', checkNucl : bool = True, prefix : str = '', suffix : str = '', seed : int = None, stdev_scale : float = 1.0, set_segment_length : int = None) -> None:
+    def __init__(self, kmer_model : dict, length : int = 2000, reference : str = None, alphabet : str = 'ACGT', checkNucl : bool = True, prefix : str = '', suffix : str = '', seed : int = None, stdev_scale : float = 1.0, set_segment_length : int = None, exp_m : float = 31.2, shiftL : int = 5, maxL : int = np.inf) -> None:
         '''
         Parameters
         ----------
@@ -28,6 +28,8 @@ class RNASimulator():
             Nucleotide sequence added to 3' end
         seed : int
             Set seed for the random generators
+        exp_m : int
+            Mean for segment length exponential distribution, 31.2 (old value 55.7)
         '''
         if checkNucl:
             for nucl in alphabet:
@@ -49,7 +51,9 @@ class RNASimulator():
         self.__setSeed(seed)
 
         # mean for exponential distribution
-        self.exp_m = 55.7
+        self.exp_m = exp_m
+        self.shiftL = shiftL
+        self.maxL = maxL
 
         # special sequence that should always appear at 5' end of sequence like adapters, barcode
         self.prefix = prefix
@@ -98,7 +102,7 @@ class RNASimulator():
         if self.set_segment_length is not None:
             return self.set_segment_length
         else:
-            return np.random.exponential(self.exp_m, 1).astype(int).item() + 5 # minimum segment length I saw in nanopolish segmentation was 5
+            return min(np.random.exponential(self.exp_m, 1).astype(int).item() + self.shiftL, self.maxL) # minimum segment length I saw in nanopolish segmentation was 5
 
     def __drawSegmentSignal(self, kmer : str, length : int) -> np.ndarray:
         assert len(kmer) == 5, f'Kmer must have length 5 not {len(kmer)}'
