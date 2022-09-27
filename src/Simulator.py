@@ -127,7 +127,7 @@ class RNASimulator():
 
     def drawReadSignals(self, n : int, max_len : int, min_len : int = 5) -> Iterable[Tuple[np.ndarray, np.ndarray]]:
         '''
-        Generates n read signal starting from 3' (RNA) end of the reference and stopping after a uniformly drawn number of bases of the interval [min_len, max_len)
+        Generates n read signals starting from 3' (RNA) end of the reference and stopping after a uniformly drawn number of bases of the interval [min_len, max_len)
 
         Parameters
         ----------
@@ -158,7 +158,7 @@ class RNASimulator():
 
     def drawReadSignal(self, max_len : int, min_len : int = 5) -> Tuple[np.ndarray, np.ndarray]:
         '''
-        Generates n read signal starting from 3' (RNA) end of the reference and stopping after a uniformly drawn number of bases
+        Generates 1 read signal starting from 3' (RNA) end of the reference and stopping after a uniformly drawn number of bases
 
         Parameters
         ----------
@@ -177,14 +177,16 @@ class RNASimulator():
         self.simulatedReads += 1
         return self.__drawSignal(stop = np.random.randint(min_len, max_len, size = 1, dtype = int).item())
 
-    def drawRefSignals(self, n : int) -> Iterable[Tuple[np.ndarray, np.ndarray]]:
+    def drawRefSignals(self, n : int, segment_lengths : Iterable[Iterable[int]] = None) -> Iterable[Tuple[np.ndarray, np.ndarray]]:
         '''
         Generates n read signal starting from 3' (RNA) end of the reference and stopping after a uniformly drawn number of bases
 
         Parameters
         ----------
         n : int
-            number of generated signals
+            number of generated read signals
+        segment_lengths : Iterable[Iterable[int]]
+            Array of integer arrays containing the number of signal data points for each 5mer segment (= #bases - 4) for each simulated read (n)
 
         Returns
         -------
@@ -201,19 +203,27 @@ class RNASimulator():
         for i in range(n):
             if (i+1)%10==0:
                 print(f'Simulating read {i + 1}\\{n} ...', end = '\r')
-            sims.append(self.__drawSignal())
+            if segment_lengths is not None:
+                sims.append(self.__drawSignal(segment_lengths=segment_lengths[i]))
+            else:
+                sims.append(self.__drawSignal())
         print(f'Done simulating {n} reads  ')
         self.simulatedReads += n
         return sims
 
-    def drawRefSignal(self) -> Tuple[np.ndarray, np.ndarray]:
+    def drawRefSignal(self, segment_lengths : Iterable[int] = None) -> Tuple[np.ndarray, np.ndarray]:
         '''
         Generates 1 read signal starting from 3' (RNA) end of the reference and stopping after a uniformly drawn number of bases
+
+        Parameters
+        ----------
+        segment_lengths : Iterable[int]
+            Integer array with the number of signal data points for each 5mer segment (= #bases - 4)
         '''
         self.simulatedReads += 1
-        return self.__drawSignal()
+        return self.__drawSignal(segment_lengths = segment_lengths)
 
-    def __drawSignal(self, stop : int = None) -> Tuple[np.ndarray, np.ndarray]:
+    def __drawSignal(self, stop : int = None, segment_lengths : Iterable[int] = None) -> Tuple[np.ndarray, np.ndarray]:
         '''
         Generates a read signal from the whole reference
 
@@ -221,6 +231,8 @@ class RNASimulator():
         ----------
         stop : int
             simulate signal from the 3' end to this base position (base included and 1-based)
+        segment_lengths : Iterable[int]
+            Integer array with the number of signal data points for each 5mer segment (= #bases - 4)
 
         Returns
         -------
@@ -235,6 +247,10 @@ class RNASimulator():
             reference = self.reference[::-1][:stop]
         else:
             reference = self.reference[::-1]
+            stop = len(reference)
+
+        if segment_lengths is not None:
+            assert stop == len(segment_lengths) - 4, 'Len of segment lenghts list must be same as number of 5mer signals to draw'
 
         assert len(reference) > 4, f'Reference sequence too small ({len(reference)}) for simulation'
 
@@ -246,10 +262,13 @@ class RNASimulator():
         border_pionter = 1
         borders = np.zeros(len(reference) - 3, dtype = int)
 
-        for n in range(len(reference) - 4):
+        for i in range(len(reference) - 4):
             # kmer_model is in 3' -> 5' orientation, same as reference here
-            kmer = reference[n:n+5]
-            segment_length = self.__drawSegmentLength()
+            kmer = reference[i:i+5]
+            if segment_lengths is not None:
+                segment_length = segment_lengths[i]
+            else:
+                segment_length = self.__drawSegmentLength()
 
             if signal_pointer + segment_length >= len(sim_signal):
                 sim_signal = np.append(sim_signal, np.zeros(init_len, dtype = float))
