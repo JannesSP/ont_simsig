@@ -9,10 +9,6 @@ import copy
 import h5py
 import os
 import numpy as np
-# TODO Logger is another project accessible with export PYTHONPATH='~/projects'
-from Logger.Logger import Logger
-
-logger = Logger()
 
 def str2int(c):
     alph = ['A', 'C', 'G', 'T']
@@ -87,7 +83,7 @@ assert not os.path.exists(output_hdf5), f'{output_hdf5} already exists!'
 
 #### read summary file with read_indices and read_ids
 read_index2ID = {}
-logger.printLog(f'Start loading ids from {nano_sum} ...')
+print(f'Start loading ids from {nano_sum} ...')
 with open(nano_sum, 'r') as sum:
 
     # skip header
@@ -98,11 +94,11 @@ with open(nano_sum, 'r') as sum:
         r_index, r_ID = line.strip().split()[:2]
 
         read_index2ID[int(r_index)] = r_ID
-logger.printLog('Done')
+print('Done')
 
 output_fh = h5py.File(output_hdf5, 'w', libver='latest')
 
-logger.printLog(f'Start preparing data with nanopolish segmentation from {nano_res} ...')
+print(f'Start preparing data with nanopolish segmentation from {nano_res} ...')
 #### read result with and get segmentation
 with open(nano_res, 'r') as res:
 

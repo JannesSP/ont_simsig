@@ -130,3 +130,4 @@ dmypy.json
 plots/simulation.png
 data/*
 testing/plot_segment_length.py
+testing/signal.ipynb

@@ -30,6 +30,10 @@ class RNASimulator():
             Set seed for the random generators
         exp_m : int
             Mean for segment length exponential distribution, 31.2 (old value 55.7)
+        shiftL : int
+            Minimum segment length, default 5
+        maxL : int
+            Maximum segment length, default np.inf
         '''
         if checkNucl:
             for nucl in alphabet:
@@ -222,6 +226,12 @@ class RNASimulator():
         '''
         self.simulatedReads += 1
         return self.__drawSignal(segment_lengths = segment_lengths)
+
+    def __drawTransition(x : float, y : float) -> np.array:
+        '''
+        Generates transition datapoints between segments
+        '''
+        pass
 
     def __drawSignal(self, stop : int = None, segment_lengths : Iterable[int] = None) -> Tuple[np.ndarray, np.ndarray]:
         '''
