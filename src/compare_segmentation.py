@@ -8,7 +8,7 @@ import os
 from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser, Namespace
 from typing import Tuple
 
-from dtaidistance import dtw
+# from dtaidistance import dtw
 import h5py
 import matplotlib.pyplot as plt
 import numpy as np
@@ -205,8 +205,8 @@ def getSimpleSegmentErrors(nanoBorders : np.ndarray, simBorders : np.ndarray) ->
 
     return errors
 
-def getSegmentDistance(nanoBorders : np.ndarray, simBorders : np.ndarray) -> float:
-    return dtw.distance_fast(nanoBorders, simBorders, use_pruning=True)
+# def getSegmentDistance(nanoBorders : np.ndarray, simBorders : np.ndarray) -> float:
+#     return dtw.distance_fast(nanoBorders, simBorders, use_pruning=True)
 
 def readFastq(fq : str) -> dict:
     return SeqIO.to_dict(SeqIO.parse(open(fq),'fastq'))
