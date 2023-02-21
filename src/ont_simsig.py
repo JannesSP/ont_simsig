@@ -17,43 +17,25 @@ def parse() -> Namespace:
 
     parser = ArgumentParser(formatter_class=ArgumentDefaultsHelpFormatter) 
     
-    parser.add_argument('num_of_reads', type = int, help='Number of reads to simulate')
+    parser.add_argument('numOfReads', type = int, help='Number of reads to simulate')
     parser.add_argument('outdir', type = str, help='Output directory to store files')
     
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument('-r', '--reference', default = None, type = str, help = 'Reference fasta file, currently only supporting a single reference')
-    group.add_argument('-rl', '--reflen', default = None, type = int, help = 'Randomly generated reference length')
+    group.add_argument('-rl', '--refLen', default = None, type = int, help = 'Randomly generated reference length')
 
     parser.add_argument('--fullRef', default = False, action = 'store_true', help = 'Always draw full reference reads')
-    parser.add_argument('--min_len', default = None, type = int, help = 'Minimum length of drawn reads')
-    parser.add_argument('--max_len', default = None, type = int, help = 'Maximum length of drawn reads')
+    parser.add_argument('--minReadLen', default = None, type = int, help = 'Minimum length of drawn reads')
+    parser.add_argument('--maxReadLen', default = None, type = int, help = 'Maximum length of drawn reads')
     parser.add_argument('--suffix', default = 'A'*50, help = 'Suffix sequence will be added to reference 3\' end')
     parser.add_argument('--model', type = str, default = os.path.join(os.path.dirname(__file__), '..', 'data', 'template_median69pA.model'), help = 'path to a .model file')
-    parser.add_argument('--stdev_scale', type = float, default = 1.0, help = 'Scale to use for each models standard deviation.')
+    parser.add_argument('--stdevScale', type = float, default = 1.0, help = 'Scale to use for each models standard deviation.')
     parser.add_argument('--seed', default = None, type = int, help = 'Seed for the random generator')
-    parser.add_argument('--segment_length', default = None, type = int, help = 'Set segment length for each kmer')
-    parser.add_argument('--min_segment_length', default = 5, type = int, help = 'Minimum segment length')
-    parser.add_argument('--max_segment_length', default = Inf, type = int, help = 'Maximum segment length')
+    parser.add_argument('--segLen', default = None, type = int, help = 'Set segment length for each kmer')
+    parser.add_argument('--minSegLen', default = 5, type = int, help = 'Minimum segment length')
+    parser.add_argument('--maxSegLen', default = Inf, type = int, help = 'Maximum segment length')
 
     return parser.parse_args()
-
-def readModel(model_path : str) -> dict:
-    '''
-    Reads the model csv
-
-    Parameters
-    ----------
-    model_path : str
-        path to model csv containing kmer, level_mean and level_stdv column
-    
-    Returns
-    -------
-    dict
-        containing kmers as key and (mean, stdev) as tuple
-    '''
-    df = pd.read_csv(model_path, sep='\t')
-    # kmers are stored from 3' to 5'
-    return {key : (mean, stdev) for key, mean, stdev in zip(df['kmer'], df['level_mean'], df['level_stdv'])}
 
 def readFasta(fa : str) -> tuple:
     fastas = SeqIO.to_dict(SeqIO.parse(open(fa),'fasta'))
@@ -73,7 +55,7 @@ def buildSimulator(model : dict, reference : str, reflen : int, suffix : str, se
 
     return header, reference, rna
 
-def simulateReads(rnasimulator : RNASimulator, num_of_reads : int, fullRef : bool,  min_len : int, max_len : int) -> list:
+def simulateReads(rnasimulator : RNASimulator, numOfReads : int, fullRef : bool,  minReadLen : int, maxReadLen : int) -> list:
     '''
     Returns
     signals : np.ndarray
@@ -86,44 +68,44 @@ def simulateReads(rnasimulator : RNASimulator, num_of_reads : int, fullRef : boo
     '''
 
     if fullRef:
-        return rnasimulator.drawRefSignals(num_of_reads)
+        return rnasimulator.drawRefSignals(numOfReads)
     else:
-        return rnasimulator.drawReadSignals(num_of_reads, minLen=min_len, maxLen=max_len)
+        return rnasimulator.drawReadSignals(numOfReads, minLen=minReadLen, maxLen=maxReadLen)
 
 def writeSignals(path : str, header : str, reference : str, signals) -> None:
     
     if not os.path.exists(path):
         os.makedirs(path)
 
-    writer = RNAWriter(reference, path=path, tag = 'simulation', header = header)
+    writer = RNAWriter(reference, path=path, tag='simulation', header=header)
     writer.writeReads(signals)
 
 def main() -> None:
     args = parse()
 
     # required
-    num_of_reads : int = args.num_of_reads
+    numOfReads : int = args.numOfReads
     outdir : str = args.outdir
     reference : str = args.reference
-    reflen : int = args.reflen
+    refLen : int = args.refLen
 
     # optional
-    min_len : int = args.min_len
-    max_len : int = args.max_len
+    minReadLen : int = args.minReadLen
+    maxReadLen : int = args.maxReadLen
     suffix : str = args.suffix
-    model : str = args.model
+    # model : str = args.model
     fullRef : bool = args.fullRef
-    stdev_scale : float = args.stdev_scale
+    stdevScale : float = args.stdevScale
     seed : int = args.seed
-    segment_length : int = args.segment_length
-    minL : int = args.min_segment_length
-    maxL : float = args.max_segment_length
+    segmentLength : int = args.segLen
+    minL : int = args.minSegmLen
+    maxL : float = args.maxSegLen
 
     print('Building reference ...')
-    header, reference, rnasimulator = buildSimulator(readModel(model), reference, reflen, suffix, seed, stdev_scale, segment_length, minL, maxL)
+    header, reference, rnasimulator = buildSimulator(reference, refLen, suffix, seed, stdevScale, segmentLength, minL, maxL)
 
     print('Simulating reads ...')
-    signals = simulateReads(rnasimulator, num_of_reads, fullRef, min_len, max_len)
+    signals = simulateReads(rnasimulator, numOfReads, fullRef, minReadLen, maxReadLen)
 
     print('Writing data ...')
     writeSignals(outdir, header, reference, signals)
