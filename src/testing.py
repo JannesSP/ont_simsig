@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # author: Jannes Spangenberg
 # e-mail: jannes.spangenberg@uni-jena.de
 # github: https://github.com/JannesSP
@@ -12,25 +13,26 @@ from numpy import diff
 from Simulator import RNASimulator
 from Writer import RNAWriter
 
+# Loading model is now done by the RNASimulation
 # =============== Loading model ===============
-kmer_model_file = os.path.join(os.path.dirname(__file__), '..', 'data', 'template_median69pA.model')
-df = pd.read_csv(kmer_model_file, sep='\t')
-# kmers are stored from 3' to 5'
-kmer_dict = {key : (mean, std) for key, mean, std in zip(df['kmer'], df['level_mean'], df['level_stdv'])}
+# kmer_model_file = os.path.join(os.path.dirname(__file__), '..', 'data', 'template_median69pA.model')
+# df = pd.read_csv(kmer_model_file, sep='\t')
+# # kmers are stored from 3' to 5'
+# kmer_dict = {key : (mean, std) for key, mean, std in zip(df['kmer'], df['level_mean'], df['level_stdv'])}
 
 # =============== Simulate ===============
 
-segment_length = 50
-for stdev_scale in [0, 0.2, 0.4, 0.6, 0.8, 1.0]:
+segmentLength = 50
+for stdevScale in [0, 0.2, 0.4, 0.6, 0.8, 1.0]:
 
-    print(f'LOOP Segment length: {segment_length} & stdev scale: {stdev_scale}')
+    print(f'LOOP Segment length: {segmentLength} & stdev scale: {stdevScale}')
 
-    rna = RNASimulator(kmer_dict, length=2000, suffix='A'*50, seed = 0, stdev_scale=stdev_scale, set_segment_length=segment_length)
+    rna = RNASimulator(refLength=2000, suffix='A'*50, seed = 0, stdevScale=stdevScale, setSegmentLength=segmentLength)
     reference = rna.getReference()
-    num_of_signals = 4000
+    numOfSignals = 4000
 
     print('Simulate RNA reads')
-    signals = rna.drawRefSignals(num_of_signals)
+    signals = rna.drawRefSignals(numOfSignals)
     # signals = rna.drawReadSignals(num_of_signals, min_len=1000, max_len=2000)
 
     # =============== Writing fast5 ===============

@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # author: Jannes Spangenberg
 # e-mail: jannes.spangenberg@uni-jena.de
 # github: https://github.com/JannesSP
@@ -60,13 +61,13 @@ def readFasta(fa : str) -> tuple:
     reference = list(fastas.keys())[1]
     return header, reference
 
-def buildSimulator(model : dict, reference : str, reflen : int, suffix : str, seed : int, stdev_scale : float, segment_length : int, minL : int, maxL : float) -> tuple:
+def buildSimulator(model : dict, reference : str, reflen : int, suffix : str, seed : int, stdevScale : float, segmentLength : int, minL : int, maxL : float) -> tuple:
 
     if reference is not None:
         header, reference = readFasta(reference)
-        rna = RNASimulator(model, reference=reference, suffix=suffix, seed=seed, stdev_scale=stdev_scale, set_segment_length=segment_length, shiftL = minL, maxL = maxL)
+        rna = RNASimulator(model, reference=reference, suffix=suffix, seed=seed, stdevScale=stdevScale, setSegmentLength=segmentLength, shiftL = minL, maxL = maxL)
     else:
-        rna = RNASimulator(model, length=reflen, suffix=suffix, seed=seed, stdev_scale=stdev_scale, set_segment_length=segment_length, shiftL = minL, maxL = maxL)
+        rna = RNASimulator(model, refLength=reflen, suffix=suffix, seed=seed, stdevScale=stdevScale, setSegmentLength=segmentLength, shiftL = minL, maxL = maxL)
         reference = rna.getReference()
         header = None
 
@@ -87,7 +88,7 @@ def simulateReads(rnasimulator : RNASimulator, num_of_reads : int, fullRef : boo
     if fullRef:
         return rnasimulator.drawRefSignals(num_of_reads)
     else:
-        return rnasimulator.drawReadSignals(num_of_reads, min_len=min_len, max_len=max_len)
+        return rnasimulator.drawReadSignals(num_of_reads, minLen=min_len, maxLen=max_len)
 
 def writeSignals(path : str, header : str, reference : str, signals) -> None:
     
