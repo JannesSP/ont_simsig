@@ -77,10 +77,10 @@ class RNASimulator():
         Loads signal distirbution kmer models from template_median69pA.model
         '''
         self.sigModels = {}
-        with open(join('..', '..', 'data', 'template_median69pA.model'), 'r') as models:
+        with open(join(__file__, '..', '..', 'data', 'template_median69pA.model'), 'r') as models:
             models.readline() # skip header
             for line in models:
-                kmer, mean, stdev, _, _, _ = line.strip().split('\t')
+                kmer, mean, stdev, _, _, _, _ = line.strip().split('\t')
                 self.sigModels[kmer[::-1]] = (float(mean), float(stdev)) # kmers are in 3'->5' orientation in template file from ONT
 
     def __loadLenModels(self) -> None:
@@ -88,7 +88,7 @@ class RNASimulator():
         Loads segment length kmer models from kmer_nbin.csv into a dictionary.
         '''
         self.lenModels = {}
-        with open(join('..', '..', 'data', 'kmer_nbin.csv'), 'r') as models:
+        with open(join(__file__, '..', '..', 'data', 'kmer_nbin.csv'), 'r') as models:
             models.readline() # skip header
             for line in models:
                 _, kmer, p, r, shift, _ = line.strip().split(',')
