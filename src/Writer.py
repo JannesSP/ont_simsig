@@ -99,7 +99,7 @@ class RNAWriter():
         '''
         for num, (signal, borders) in enumerate(simSignals):
             
-            if (num+1)%10==0:
+            if (num+1)%100==0:
                 print(f'Writing read {self.readNum + 1}\{len(simSignals)} in batch {self.batch} ...', end = '\r')
             
             if self.readNum%self.batchsize == 0 and self.readNum != 0:

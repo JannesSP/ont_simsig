@@ -29,8 +29,8 @@ for stdevScale in [0, 0.2, 0.4, 0.6, 0.8, 1.0]:
 
     # =============== Writing fast5 ===============
 
-    path = os.path.join(os.path.dirname(__file__), '..', 'data')
-    writer = RNAWriter(reference, path=path, tag = 'simulation')
+    outpath = os.path.join(os.path.dirname(__file__), '..', 'output')
+    writer = RNAWriter(reference, path=outpath, tag = 'simulation')
     writer.writeReads(signals)
 
     # =============== Plotting first 3 reads ===============

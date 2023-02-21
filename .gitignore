@@ -131,3 +131,4 @@ plots/simulation.png
 testing/plot_segment_length.py
 testing/signal.ipynb
 data/RNA_simulation*
+output/RNA_simulation*
