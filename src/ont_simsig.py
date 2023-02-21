@@ -39,8 +39,7 @@ def parse() -> Namespace:
 
 def readFasta(fa : str) -> tuple:
     fastas = SeqIO.to_dict(SeqIO.parse(open(fa),'fasta'))
-    header = list(fastas.keys())[0]
-    reference = list(fastas.keys())[1]
+    header, reference = list(fastas.keys())[:2]
     return header, reference
 
 def buildSimulator(model : dict, reference : str, reflen : int, suffix : str, seed : int, stdevScale : float, segmentLength : int, minL : int, maxL : float) -> tuple:
@@ -93,7 +92,6 @@ def main() -> None:
     minReadLen : int = args.minReadLen
     maxReadLen : int = args.maxReadLen
     suffix : str = args.suffix
-    # model : str = args.model
     fullRef : bool = args.fullRef
     stdevScale : float = args.stdevScale
     seed : int = args.seed
@@ -103,13 +101,10 @@ def main() -> None:
 
     print('Building reference ...')
     header, reference, rnasimulator = buildSimulator(reference, refLen, suffix, seed, stdevScale, segmentLength, minL, maxL)
-
     print('Simulating reads ...')
     signals = simulateReads(rnasimulator, numOfReads, fullRef, minReadLen, maxReadLen)
-
     print('Writing data ...')
     writeSignals(outdir, header, reference, signals)
-
     print('Done')
 
 if __name__ == '__main__':
