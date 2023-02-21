@@ -13,15 +13,7 @@ from numpy import diff
 from Simulator import RNASimulator
 from Writer import RNAWriter
 
-# Loading model is now done by the RNASimulation
-# =============== Loading model ===============
-# kmer_model_file = os.path.join(os.path.dirname(__file__), '..', 'data', 'template_median69pA.model')
-# df = pd.read_csv(kmer_model_file, sep='\t')
-# # kmers are stored from 3' to 5'
-# kmer_dict = {key : (mean, std) for key, mean, std in zip(df['kmer'], df['level_mean'], df['level_stdv'])}
-
 # =============== Simulate ===============
-
 segmentLength = 50
 for stdevScale in [0, 0.2, 0.4, 0.6, 0.8, 1.0]:
 
