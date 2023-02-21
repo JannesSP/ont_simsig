@@ -13,3 +13,7 @@ We use Gaussian signal distributions provided by [ONT](data\template_median69pA.
 ### segment length simulation
 
 We analyzed the segment distribution on IVT RNA data sequenced with ONT. The segment lengths were calculated by ONTs software ```nanopolish eventalign```. We fitted [negative binomial distributions](data\kmer_nbin.csv) on each 5-mer length distribution and use them to simulate segment lengths with ```ont_simig```.
+
+### changing distribution models
+
+To change the models used for the simulation you have to change the content of the files linked above.
