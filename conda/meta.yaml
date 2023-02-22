@@ -22,6 +22,15 @@ requirements:
     - python>=3.11
     - numpy>=1.24
     - setuptools
+  # host:
+  #   - python>=3.11
+  #   - h5py>=3.8
+  #   - biopython>=1.81
+  #   - matplotlib>=3.7
+  #   - numpy>=1.23
+  #   - scipy>=1.10
+  #   - pandas>=1.5
+  #   - seaborn>=0.12
   run:
     - python>=3.11
     - h5py>=3.8
@@ -31,8 +40,6 @@ requirements:
     - scipy>=1.10
     - pandas>=1.5
     - seaborn>=0.12
-    # - hdf5plugin>=3.3.1
-    # - ont_vbz_hdf_plugin>=1.0.1
 
 test:
   imports:
