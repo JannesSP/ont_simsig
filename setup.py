@@ -29,5 +29,5 @@ setup(name='ont_simsig',
             ]
       },
       install_requires=requirements,
-      keywords=['ont_simsig', 'ONT simulation', 'RNA simulation', 'ONT', 'Oxford Nanopore Technologies', 'MinION', 'Direct RNA Sequencing'],
+      keywords=['ont_simsig', 'ONT simulation', 'RNA simulation', 'ONT', 'signal simulation', 'raw data', 'Oxford Nanopore Technologies', 'MinION', 'Direct RNA Sequencing'],
      )
