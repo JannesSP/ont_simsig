@@ -3,7 +3,6 @@
 # github: https://github.com/JannesSP
 # website: https://jannessp.github.io
 
-import sys
 from ont_simsig.Simulator import RNASimulator
 
 def testLength():

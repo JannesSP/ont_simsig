@@ -5,9 +5,7 @@
 
 from typing import Iterable, Tuple
 import numpy as np
-# from os.path import join
 import os
-ROOT = os.path.realpath(os.path.abspath(os.getcwd()))
 
 class RNASimulator():
 
@@ -78,7 +76,7 @@ class RNASimulator():
         Loads signal distirbution kmer models from template_median69pA.model
         '''
         self.sigModels = {}
-        with open(os.path.join(ROOT, 'data', 'template_median69pA.model'), 'r') as models:
+        with open(os.path.join(__file__, '..', '..', 'data', 'template_median69pA.model'), 'r') as models:
             models.readline() # skip header
             for line in models:
                 kmer, mean, stdev, _, _, _, _ = line.strip().split('\t')
@@ -89,7 +87,7 @@ class RNASimulator():
         Loads segment length kmer models from kmer_nbin.csv into a dictionary.
         '''
         self.lenModels = {}
-        with open(os.path.join(ROOT, 'data', 'kmer_nbin.csv'), 'r') as models:
+        with open(os.path.join(__file__, '..', '..', 'data', 'kmer_nbin.csv'), 'r') as models:
             models.readline() # skip header
             for line in models:
                 _, kmer, p, r, shift, _ = line.strip().split(',')
