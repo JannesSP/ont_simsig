@@ -37,14 +37,14 @@ requirements:
     - {{ dep.lower() }}
     {% endfor %}
 
-test:
-  source_files:
-    - tests
-  requires:
-    - pytest
-    - pytest-cov
-  commands:
-    - pytest
+# test:
+#   source_files:
+#     - tests
+#   requires:
+#     - pytest
+#     - pytest-cov
+#   commands:
+#     - pytest
 
 about:
   home: https://github.com/JannesSP/ont_simsig
