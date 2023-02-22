@@ -1,14 +1,12 @@
+#!/usr/bin/env python
 # author: Jannes Spangenberg
 # e-mail: jannes.spangenberg@uni-jena.de
 # github: https://github.com/JannesSP
 # website: https://jannessp.github.io
 
 import os
-
 import matplotlib.pyplot as plt
-import pandas as pd
 from numpy import diff
-
 from Simulator import RNASimulator
 from Writer import RNAWriter
 
