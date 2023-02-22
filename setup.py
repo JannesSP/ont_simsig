@@ -11,7 +11,7 @@ requirements = [
       'seaborn',
       ]
 
-setup(name='ont_simsig',
+setup(name='ONT_SimSig',
       version='1.0.0',
       description='Simulation of Oxford Nanopore Technologies RNA sequencing signals',
       author='Jannes Spangenberg',
