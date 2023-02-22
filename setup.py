@@ -27,10 +27,5 @@ setup(
         ]
     },
     install_requires=requirements,
-    keywords='ont_simsig',
-    classifiers=[
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
-    ]
+    keywords=['ont_simsig', 'ONT simulation', 'RNA simulation', 'ONT', 'signal simulation', 'raw data', 'Oxford Nanopore Technologies', 'MinION', 'Direct RNA Sequencing'],
 )

@@ -4,8 +4,7 @@
 # website: https://jannessp.github.io
 
 import sys
-sys.path.append("..")
-from ..ont_simsig.Simulator import RNASimulator
+from ont_simsig.Simulator import RNASimulator
 
 def testLength():
     rna = RNASimulator(refLength = 1943)
