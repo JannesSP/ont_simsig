@@ -1,4 +1,4 @@
-{% set name = "ont_simsig" %}
+{% set name = "ONT_SimSig" %}
 {% set version = "1.0.0" %}
 
 package:
