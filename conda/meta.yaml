@@ -23,17 +23,17 @@ requirements:
     - numpy>=1.24
     - setuptools
   # host:
-  #   - python>=3.11
-  #   - h5py>=3.8
-  #   - biopython>=1.81
-  #   - matplotlib>=3.7
-  #   - numpy>=1.23
-  #   - scipy>=1.10
-  #   - pandas>=1.5
-  #   - seaborn>=0.12
+    # - python>=3.11
+    # - h5py>=3.7
+    # - biopython>=1.81
+    # - matplotlib>=3.7
+    # - numpy>=1.23
+    # - scipy>=1.10
+    # - pandas>=1.5
+    # - seaborn>=0.12
   run:
     - python>=3.11
-    - h5py>=3.8
+    - h5py>=3.7
     - biopython>=1.81
     - matplotlib>=3.7
     - numpy>=1.23
