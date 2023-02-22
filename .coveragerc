@@ -1,0 +1,7 @@
+[report]
+omit =
+    setup.py
+    ont_simsig/__main__.py
+    ont_simsig/_version.py
+    versioneer.py
+    tests/*

@@ -1,14 +1,13 @@
-#!/usr/bin/env python
 # author: Jannes Spangenberg
 # e-mail: jannes.spangenberg@uni-jena.de
 # github: https://github.com/JannesSP
 # website: https://jannessp.github.io
-
 from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser, Namespace
 import os
 from Bio import SeqIO
 from numpy import Inf
 
+from ont_simsig import __version__
 from Simulator import RNASimulator
 from Writer import RNAWriter
 

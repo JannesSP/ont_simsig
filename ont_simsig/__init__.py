@@ -1,4 +1,3 @@
-# author: Jannes Spangenberg
-# e-mail: jannes.spangenberg@uni-jena.de
-# github: https://github.com/JannesSP
-# website: https://jannessp.github.io
+from ._version import get_versions
+__version__ = get_versions()['version']
+del get_versions

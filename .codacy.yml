@@ -1,0 +1,8 @@
+---
+exclude_paths:
+  - 'ont_simsig/_version.py'
+  - 'tests/**/*'
+  - 'tests/*'
+  - 'benchmarks/**/*'
+  - 'setup.py'
+  - 'versioneer.py'
