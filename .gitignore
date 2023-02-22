@@ -128,6 +128,7 @@ dmypy.json
 # Pyre type checker
 .pyre/
 plots/simulation.png
-data/*
 testing/plot_segment_length.py
 testing/signal.ipynb
+data/RNA_simulation*
+output/RNA_simulation*
