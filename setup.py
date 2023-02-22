@@ -6,7 +6,6 @@ requirements = [
       'biopython',
       'matplotlib',
       'numpy',
-      'scipy',
       'pandas',
       'seaborn',
       ]
