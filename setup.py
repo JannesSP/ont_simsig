@@ -25,7 +25,7 @@ setup(name='ont_simsig',
       },
       entry_points={
             'console_scripts':[
-                  'ont_simsig=src.ont_simsig:main',
+                  'ont_simsig=ont_simsig.ont_simsig:main',
             ]
       },
       install_requires=requirements,

@@ -4,12 +4,9 @@
 # github: https://github.com/JannesSP
 # website: https://jannessp.github.io
 
-import os
 import sys
-import pandas as pd
-import numpy as np
 sys.path.append("..")
-from ..src.Simulator import RNASimulator
+from ..ont_simsig.Simulator import RNASimulator
 
 def testLength():
     rna = RNASimulator(refLength = 1943)
