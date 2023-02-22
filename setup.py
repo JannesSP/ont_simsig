@@ -19,7 +19,7 @@ setup(name='ont_simsig',
       url='https://github.com/JannesSP/ont_simsig',
       license='MIT License',
       packages=find_packages(),
-      py_modules=['src'],
+      py_modules=['ont_simsig'],
       package_data={
         'ont_simsig':['README.md','LICENSE'],
       },
