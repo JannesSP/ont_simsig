@@ -3,7 +3,6 @@ import versioneer
 
 requirements = [
     # package requirements go here
-    'python',
     'h5py',
     'biopython',
     'matplotlib',
