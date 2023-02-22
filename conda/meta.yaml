@@ -33,9 +33,9 @@ requirements:
   run:
     - python>=3.11
     - h5py>=3.7
-    - biopython>=1.80
-    - matplotlib>=3.6
-    - numpy>=1.23
+    - biopython>=1.81
+    - matplotlib>=3.7
+    - numpy>=1.24
     - pandas>=1.5
     - seaborn>=0.12
 
