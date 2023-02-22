@@ -42,8 +42,8 @@ test:
 
 about:
   home: https://github.com/JannesSP/{{ name|lower }}
-  license: GNU General Public License v3.0
-  license_family: GPL
+  license: MIT License
+  license_family: MIT
   license_file: LICENSE 
   summary: "Simulation of Oxford Nanopore Technologies RNA sequencing signals"
 
