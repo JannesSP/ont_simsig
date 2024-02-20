@@ -76,7 +76,7 @@ class RNASimulator():
         Loads signal distirbution kmer models from template_median69pA.model
         '''
         self.sigModels = {}
-        with open(os.path.join(__file__, '..', '..', 'data', 'template_median69pA.model'), 'r') as models:
+        with open(os.path.join(os.path.dirname(__file__), '..', 'data', 'template_median69pA.model'), 'r') as models:
             models.readline() # skip header
             for line in models:
                 kmer, mean, stdev, _, _, _, _ = line.strip().split('\t')
@@ -87,7 +87,7 @@ class RNASimulator():
         Loads segment length kmer models from kmer_nbin.csv into a dictionary.
         '''
         self.lenModels = {}
-        with open(os.path.join(__file__, '..', '..', 'data', 'kmer_nbin.csv'), 'r') as models:
+        with open(os.path.join(os.path.dirname(__file__), '..', 'data', 'kmer_nbin.csv'), 'r') as models:
             models.readline() # skip header
             for line in models:
                 _, kmer, p, r, shift, _ = line.strip().split(',')
@@ -171,7 +171,7 @@ class RNASimulator():
         '''
         return self.reference
 
-    def drawReadSignals(self, n : int, maxLen : int, minLen : int = 5) -> Iterable[Tuple[np.ndarray, np.ndarray]]:
+    def drawReadSignals(self, n : int, maxLen : int, minLen : int = 5) -> list:
         '''
         Generates n read signals starting from 3' (RNA) end of the reference and stopping after a uniformly drawn number of bases of the interval [min_len, max_len)
 
@@ -200,7 +200,7 @@ class RNASimulator():
         assert maxLen < self.refLength
         assert minLen >= 5
         self.simulatedReads += n
-        return np.array([self.__drawSignal(stop = np.random.randint(minLen, maxLen, size = 1, dtype = int).item()) for _ in range(n)])
+        return [self.__drawSignal(stop = np.random.randint(minLen, maxLen, size = 1, dtype = int).item()) for _ in range(n)]
 
     def drawReadSignal(self, maxLen : int, minLen : int = 5) -> Tuple[np.ndarray, np.ndarray]:
         '''
