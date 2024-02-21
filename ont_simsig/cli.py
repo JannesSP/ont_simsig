@@ -55,7 +55,7 @@ def simulateReads(rnasimulator : RNASimulator, numOfReads : int, fullRef : bool,
     '''
     Returns
     signals : np.ndarray
-        as [(signal, segments), ...]
+        as [(signal, segments, read), ...]
         
         signal : np.ndarray
             a numpy array representing the simulated signal according the given kmer_model
@@ -99,9 +99,9 @@ def main() -> None:
     print('Building reference ...')
     header, reference, rnasimulator = buildSimulator(reference, refLen, suffix, seed, stdevScale, segmentLength, maxL)
     print('Simulating reads ...')
-    signals = simulateReads(rnasimulator, numOfReads, fullRef, minReadLen, maxReadLen)
+    results = simulateReads(rnasimulator, numOfReads, fullRef, minReadLen, maxReadLen)
     print('Writing data ...')
-    writeSignals(outdir, header, reference, signals)
+    writeSignals(outdir, header, reference, results)
     print('Done')
 
 if __name__ == '__main__':

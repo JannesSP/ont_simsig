@@ -53,6 +53,13 @@ class RNAWriter():
         self.__initH5()
         self.__initSum()
         self.__writeRefFasta()
+        self.__initReadFasta()
+
+    def __initReadFasta(self) -> None:
+        self.fasta = open(f'{self.filename}{self.batch}.fasta', 'w')
+
+    def __closeReadFasta(self) -> None:
+        self.fasta.close()
 
     def __initH5(self) -> None:
         self.h5 = h5py.File(f'{self.filename}{self.batch}.fast5', 'w')
@@ -87,7 +94,7 @@ class RNAWriter():
         '''
         self.writeReads([simSignal])
     
-    def writeReads(self, simSignals : Iterable[Tuple[np.ndarray, np.ndarray]]) -> None:
+    def writeReads(self, simSignals : Iterable[Tuple[np.ndarray, np.ndarray, list]]) -> None:
         '''
         Write multiple signals to the FAST5 file
         Parameters
@@ -96,7 +103,7 @@ class RNAWriter():
             pA signals to write into the FAST5 file
             borders of the segments to write into the FAST5 file
         '''
-        for num, (signal, borders) in enumerate(simSignals):
+        for num, (signal, borders, read) in enumerate(simSignals):
             
             if (num+1)%100==0:
                 print(f'Writing read {self.readNum + 1}\{len(simSignals)} in batch {self.batch} ...', end = '\r')
@@ -110,10 +117,15 @@ class RNAWriter():
                 # EXTRA INFORMATION
                 self.h5.attrs.create('num_nucleotides', data=len(self.reference), dtype=np.uint16)
                 self.h5.attrs.create("Reference", data=np.string_(self.reference))
+
+                self.__closeReadFasta()
+                self.__initReadFasta()
             
             readId = 'sim-' + str(self.readNum)
             fast5Id = 'read_' + readId
             channelNumber = str(np.random.randint(1, 513))
+
+            self.fasta.write(readId + '\n' + ''.join(read[::-1]) + '\n')
 
             read = self.h5.create_group(fast5Id)
             read.attrs.create('pore_type', data=np.bytes_('not_set'))
@@ -191,6 +203,8 @@ class RNAWriter():
             self.startTime += len(signal)
             self.readNum += 1
         
+        self.__closeReadFasta()
+        self.h5.close()
         print(f'\nDone writing {len(simSignals)} reads')
             
     def close(self):

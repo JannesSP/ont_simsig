@@ -79,7 +79,7 @@ class RNASimulator():
         with open(os.path.join(os.path.dirname(__file__), '..', 'data', 'template_median69pA.model'), 'r') as models:
             models.readline() # skip header
             for line in models:
-                kmer, mean, stdev, _, _, _, _ = line.strip().split('\t')
+                kmer, mean, _, stdev, _, _, _ = line.strip().split('\t')
                 self.sigModels[kmer[::-1]] = (float(mean), float(stdev)) # kmers are in 3'->5' orientation in template file from ONT
 
     def __loadLenModels(self) -> None:
@@ -202,7 +202,7 @@ class RNASimulator():
         self.simulatedReads += n
         return [self.__drawSignal(stop = np.random.randint(minLen, maxLen, size = 1, dtype = int).item()) for _ in range(n)]
 
-    def drawReadSignal(self, maxLen : int, minLen : int = 5) -> Tuple[np.ndarray, np.ndarray]:
+    def drawReadSignal(self, maxLen : int, minLen : int = 5) -> Tuple[np.ndarray, np.ndarray, list]:
         '''
         Generates 1 read signal starting from 3' (RNA) end of the reference and stopping after a uniformly drawn number of bases
 
@@ -223,7 +223,7 @@ class RNASimulator():
         self.simulatedReads += 1
         return self.__drawSignal(stop = np.random.randint(minLen, maxLen, size = 1, dtype = int).item())
 
-    def drawRefSignals(self, n : int, segmentLengths : Iterable[Iterable[int]] = None) -> Iterable[Tuple[np.ndarray, np.ndarray]]:
+    def drawRefSignals(self, n : int, segmentLengths : Iterable[Iterable[int]] = None) -> Iterable[Tuple[np.ndarray, np.ndarray, list]]:
         '''
         Generates n read signal starting from 3' (RNA) end of the reference and stopping after a uniformly drawn number of bases
 
@@ -257,7 +257,7 @@ class RNASimulator():
         self.simulatedReads += n
         return sims
 
-    def drawRefSignal(self, segmentLengths : Iterable[int] = None) -> Tuple[np.ndarray, np.ndarray]:
+    def drawRefSignal(self, segmentLengths : Iterable[int] = None) -> Tuple[np.ndarray, np.ndarray, list]:
         '''
         Generates 1 read signal starting from 3' (RNA) end of the reference and stopping after a uniformly drawn number of bases
 
@@ -275,7 +275,7 @@ class RNASimulator():
         '''
         pass
 
-    def __drawSignal(self, stop : int = None, segmentLengths : Iterable[int] = None) -> Tuple[np.ndarray, np.ndarray]:
+    def __drawSignal(self, stop : int = None, segmentLengths : Iterable[int] = None) -> Tuple[np.ndarray, np.ndarray, list]:
         '''
         Generates a read signal from the whole reference
 
@@ -310,12 +310,14 @@ class RNASimulator():
         signalPointer = 0
         initLen = len(reference) * int(35) # 35.163636... is the mean of the negative binomial for 'all' kmers
         simSignal = np.zeros(initLen, dtype = float)
+        simRead = []
 
         borderPionter = 1
         borders = np.zeros(len(reference) - 3, dtype = int)
 
         # loop over reference in 3'->5' orientation
         for i in range(len(reference) - 4):
+            simRead.append(reference[i+2])
             kmer = reference[i:i+5][::-1] # model kmers are in 5'->3' direction, change it to 3'->5' for simulation of RNA signal
             segmentLength = segmentLengths[i] if segmentLengths is not None else self.__drawSegmentLength(kmer)
 
@@ -328,4 +330,4 @@ class RNASimulator():
             borders[borderPionter] = signalPointer
             borderPionter += 1
 
-        return simSignal[:signalPointer], borders[:borderPionter]
+        return simSignal[:signalPointer], borders[:borderPionter], simRead
