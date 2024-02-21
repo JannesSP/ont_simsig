@@ -56,7 +56,7 @@ class RNAWriter():
         self.__initReadFasta()
 
     def __initReadFasta(self) -> None:
-        self.fasta = open(f'{self.filename}{self.batch}.fasta', 'w')
+        self.fasta = open(f'{self.filename}.fasta', 'w')
 
     def __closeReadFasta(self) -> None:
         self.fasta.close()
@@ -117,15 +117,12 @@ class RNAWriter():
                 # EXTRA INFORMATION
                 self.h5.attrs.create('num_nucleotides', data=len(self.reference), dtype=np.uint16)
                 self.h5.attrs.create("Reference", data=np.string_(self.reference))
-
-                self.__closeReadFasta()
-                self.__initReadFasta()
             
             readId = 'sim-' + str(self.readNum)
             fast5Id = 'read_' + readId
             channelNumber = str(np.random.randint(1, 513))
 
-            self.fasta.write(readId + '\n' + ''.join(read[::-1]) + '\n')
+            self.fasta.write('>' + readId + '\n' + ''.join(read[::-1]) + '\n')
 
             read = self.h5.create_group(fast5Id)
             read.attrs.create('pore_type', data=np.bytes_('not_set'))
