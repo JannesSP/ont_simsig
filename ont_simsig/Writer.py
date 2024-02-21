@@ -56,7 +56,7 @@ class RNAWriter():
         self.__initReadFasta()
 
     def __initReadFasta(self) -> None:
-        self.fasta = open(f'{self.filename}.fasta', 'w')
+        self.fasta = open(f'{self.filename.split("_batch")[0]}.fasta', 'w')
 
     def __closeReadFasta(self) -> None:
         self.fasta.close()
@@ -70,11 +70,11 @@ class RNAWriter():
         self.h5.attrs.create('Reference', data=np.string_(self.reference))
         
     def __initSum(self) -> None:
-        self.sum = open(f'{self.filename}_sequencing_summary.txt', 'w')
+        self.sum = open(f'{self.filename.split("_batch")[0]}_sequencing_summary.txt', 'w')
         self.sum.write('filename_fastq\tfilename_fast5\tread_id\trun_id\tchannel\tmux\tstart_time\tduration\tpore_type\texperiment_id\tsample_id\tend_reason\n')
 
     def __writeRefFasta(self) -> None:
-        with open(f'{splitext(self.filename)[0]}_reference.fasta', 'w') as f:
+        with open(f'{self.filename.split("_batch")[0]}_reference.fasta', 'w') as f:
             if self.header is not None:
                 f.write(f'>{self.header}\n{self.reference}\n')
             else:
