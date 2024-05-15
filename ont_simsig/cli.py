@@ -6,7 +6,6 @@ from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser, Namespace
 import os
 from Bio import SeqIO
 from numpy import Inf
-import pandas as pd
 
 from __init__ import __version__
 from Simulator import RNASimulator
@@ -21,8 +20,7 @@ def parse() -> Namespace:
     
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument('-r', '--reference', default = None, type = str, help = 'Reference fasta file, currently only supporting a single reference')
-    group.add_argument('-rl', '--refLen', default = None, type = int, help = 'Randomly generated reference length')
-
+    group.add_argument('-rl', '--refLen', default = None, type = int, help = 'Randomly generated reference of given length')
     parser.add_argument('--fullRef', default = False, action = 'store_true', help = 'Always draw full reference reads')
     parser.add_argument('--minReadLen', default = 100, type = int, help = 'Minimum length of drawn reads')
     parser.add_argument('--maxReadLen', default = None, type = int, help = 'Maximum length of drawn reads')
@@ -36,8 +34,8 @@ def parse() -> Namespace:
 
 def readFasta(fa : str) -> tuple:
     fastas = SeqIO.to_dict(SeqIO.parse(open(fa),'fasta'))
-    header, reference = list(fastas.keys())[:2]
-    return header, reference
+    header = list(fastas.keys())[0]
+    return header, fastas[header].seq
 
 def buildSimulator(reference : str, reflen : int, suffix : str, seed : int, stdevScale : float, segmentLength : int, maxL : float) -> tuple:
 
